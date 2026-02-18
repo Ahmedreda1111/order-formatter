@@ -4,135 +4,154 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bulk Order Formatter – smmxhero</title>
-<meta name="description" content="Free bulk order formatter tool by smmxhero">
+<title id="pageTitle">Bulk Order Formatter – smmxhero</title>
+<meta name="description" content="Professional bulk order formatter tool by smmxhero for SMM panels.">
+<meta name="keywords" content="bulk order formatter, smm tools, order id formatter">
+
+<!-- Analytics (ضع ID بتاعك) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXXXXX');
+</script>
 
 <style>
 :root{
-  --bg1:#0f2027;
-  --bg2:#203a43;
-  --card:#111;
-  --text:#fff;
-  --input:#fff;
-  --result:#1a1a1a;
-  --accent:#00c6ff;
+  --bg1:#1f2933;
+  --bg2:#111827;
+  --card:#0b1220;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --input:#111827;
+  --result:#020617;
+  --accent:#2563eb;
 }
 body.light{
-  --bg1:#f2f2f2;
-  --bg2:#e6e6e6;
+  --bg1:#f3f4f6;
+  --bg2:#e5e7eb;
   --card:#ffffff;
-  --text:#111;
-  --input:#eeeeee;
-  --result:#f7f7f7;
+  --text:#111827;
+  --muted:#6b7280;
+  --input:#f9fafb;
+  --result:#f3f4f6;
 }
 
 body{
   margin:0;
   min-height:100vh;
   background:linear-gradient(135deg,var(--bg1),var(--bg2));
-  font-family:Tahoma,Arial;
+  font-family:Inter,Tahoma,Arial;
   display:flex;
   align-items:center;
   justify-content:center;
   color:var(--text);
-  transition:.3s;
 }
 
 .card{
-  width:600px;
-  max-width:95%;
+  width:680px;
+  max-width:96%;
   background:var(--card);
-  padding:22px;
-  border-radius:18px;
-  box-shadow:0 15px 45px rgba(0,0,0,.45);
+  padding:24px;
+  border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
 }
 
-/* HEADER */
+/* Header */
 .header{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-.brand{font-weight:bold;font-size:18px}
+.brand{font-weight:600;font-size:18px}
 .icons span{
   cursor:pointer;
   margin-inline-start:14px;
   font-size:18px;
 }
 
-/* CONTENT */
-h2{text-align:center;margin:12px 0 4px}
-.sub{text-align:center;font-size:13px;opacity:.8}
+/* Content */
+h2{text-align:center;margin:14px 0 6px}
+.sub{text-align:center;font-size:13px;color:var(--muted)}
 
 textarea{
   width:100%;
-  height:160px;
-  margin-top:12px;
+  height:180px;
+  margin-top:14px;
   border:none;
-  border-radius:12px;
-  padding:12px;
+  border-radius:14px;
+  padding:14px;
   resize:none;
   background:var(--input);
+  color:var(--text);
   font-size:15px;
 }
 
-.options,.buttons{
+.row{
   display:flex;
   gap:10px;
   margin-top:12px;
   flex-wrap:wrap;
 }
 
-select,button.small{
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+select,label{
+  font-size:13px;
 }
 
 button{
-  flex:1;
   padding:12px;
   border:none;
-  border-radius:10px;
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  border-radius:12px;
+  background:var(--accent);
   color:#fff;
   cursor:pointer;
+  flex:1;
 }
-button.secondary{background:#555}
-
-.counter{
-  margin-top:10px;
-  font-size:13px;
-  opacity:.85;
+button.secondary{background:#374151}
+button.ghost{
+  background:#020617;
+  color:#e5e7eb;
 }
 
+/* Result */
 .result{
-  margin-top:10px;
+  margin-top:14px;
   background:var(--result);
-  padding:12px;
-  border-radius:12px;
+  padding:16px;
+  border-radius:16px;
   word-break:break-all;
-  min-height:40px;
+  min-height:80px;
+  transition:.25s;
+}
+.result.animate{
+  transform:scale(1.02);
+  box-shadow:0 0 0 2px var(--accent);
 }
 
-/* FOOTER */
+.meta{
+  margin-top:8px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* Footer */
 .footer{
-  margin-top:14px;
+  margin-top:16px;
   text-align:center;
   font-size:12px;
-  opacity:.75;
+  color:var(--muted);
 }
 
-/* TOAST */
+/* Toast */
 .toast{
   position:fixed;
   bottom:20px;
   right:20px;
-  background:#00c853;
+  background:#16a34a;
   color:#fff;
   padding:10px 14px;
-  border-radius:8px;
+  border-radius:10px;
   display:none;
 }
 </style>
@@ -154,23 +173,34 @@ button.secondary{background:#555}
 
   <textarea id="input"></textarea>
 
-  <div class="options">
+  <!-- OPTIONS -->
+  <div class="row">
     <select id="sep">
-      <option value=",">,</option>
-      <option value="|">|</option>
-      <option value=";">;</option>
+      <option value=",">Comma (,)</option>
+      <option value="|">Pipe (|)</option>
+      <option value=";">Semicolon (;)</option>
     </select>
-    <button class="small" id="pasteBtn" onclick="pasteText()"></button>
-    <button class="small" id="clearBtn" onclick="clearAll()"></button>
+
+    <label>
+      <input type="checkbox" id="dedupe" checked>
+      <span id="dedupeLabel"></span>
+    </label>
+
+    <label>
+      <input type="checkbox" id="autoCopy" checked>
+      <span id="autoCopyLabel"></span>
+    </label>
   </div>
 
-  <div class="buttons">
-    <button id="convertBtn" onclick="convert()"></button>
-    <button class="secondary" id="downloadBtn" onclick="download()"></button>
+  <!-- ACTIONS -->
+  <div class="row">
+    <button onclick="convert()" id="convertBtn"></button>
+    <button class="secondary" onclick="copyResult()" id="copyBtn"></button>
+    <button class="ghost" onclick="clearAll()" id="clearBtn"></button>
   </div>
 
-  <div class="counter" id="counter"></div>
   <div class="result" id="result"></div>
+  <div class="meta" id="meta"></div>
 
   <div class="footer" id="footerText"></div>
 </div>
@@ -181,110 +211,14 @@ button.secondary{background:#555}
 const t={
   en:{
     title:"Bulk Order Formatter",
-    sub:"Convert order IDs instantly",
+    sub:"Professional tool for formatting bulk order IDs",
     convert:"Convert",
-    download:"Download",
-    paste:"Paste",
+    copy:"Copy",
     clear:"Clear",
+    dedupe:"Remove duplicates",
+    autoCopy:"Auto copy",
     copied:"Copied successfully",
     placeholder:"Paste order IDs here",
-    footer:"Powered by smmxhero.com – Free Bulk Tools",
-    counter:"Orders: "
-  },
-  ar:{
-    title:"أداة تنسيق الطلبات",
-    sub:"تحويل أرقام الطلبات بسرعة",
-    convert:"تحويل",
-    download:"تحميل",
-    paste:"لصق",
-    clear:"مسح",
-    copied:"تم النسخ بنجاح",
-    placeholder:"ضع أرقام الطلبات هنا",
-    footer:"مدعوم من smmxhero.com – أدوات مجانية",
-    counter:"عدد الطلبات: "
-  }
-};
-
-let lang=localStorage.getItem("lang")||"en";
-let theme=localStorage.getItem("theme")||"dark";
-
-function applyLang(){
-  document.documentElement.lang=lang;
-  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-
-  title.innerText=t[lang].title;
-  subtitle.innerText=t[lang].sub;
-  convertBtn.innerText=t[lang].convert;
-  downloadBtn.innerText=t[lang].download;
-  pasteBtn.innerText=t[lang].paste;
-  clearBtn.innerText=t[lang].clear;
-  toast.innerText=t[lang].copied;
-  input.placeholder=t[lang].placeholder;
-  footerText.innerText=t[lang].footer;
-  langLabel.innerText=lang.toUpperCase();
-  updateCounter();
-}
-
-function toggleLang(){
-  lang=lang==="en"?"ar":"en";
-  localStorage.setItem("lang",lang);
-  applyLang();
-}
-
-function toggleTheme(){
-  document.body.classList.toggle("light");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("light")?"light":"dark"
-  );
-}
-
-if(theme==="light") document.body.classList.add("light");
-applyLang();
-
-/* ACTIONS */
-function showToast(){
-  toast.style.display="block";
-  setTimeout(()=>toast.style.display="none",2000);
-}
-
-function updateCounter(){
-  let lines=input.value.split(/\s+/).filter(Boolean);
-  counter.innerText=t[lang].counter + lines.length;
-}
-
-input.addEventListener("input",updateCounter);
-
-function convert(){
-  let lines=input.value.split(/\s+/).filter(Boolean);
-  let unique=[...new Set(lines)];
-  let out=unique.join(sep.value);
-  result.innerText=out;
-  navigator.clipboard.writeText(out);
-  showToast();
-}
-
-function pasteText(){
-  navigator.clipboard.readText().then(text=>{
-    input.value=text;
-    updateCounter();
-  });
-}
-
-function clearAll(){
-  input.value="";
-  result.innerText="";
-  updateCounter();
-}
-
-function download(){
-  if(!result.innerText) return;
-  let a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([result.innerText]));
-  a.download="orders.txt";
-  a.click();
-}
-</script>
-
-</body>
-</html>
+    footer:"Powered by smmxhero.com",
+    meta:(x,y)=>`Converted: ${x} orders – Removed: ${y} duplicates`,
+    pageTit
