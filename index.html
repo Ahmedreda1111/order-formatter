@@ -139,6 +139,20 @@ button:hover {
     margin-top: 10px;
     opacity: 0.7;
 }
+
+/* 🔔 Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #16a34a;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
 </style>
 </head>
 
@@ -185,16 +199,20 @@ button:hover {
     </div>
 </div>
 
+<div class="toast" id="toast">Copied successfully</div>
+
 <script>
 const input = document.getElementById("input");
 const result = document.getElementById("result");
 const count = document.getElementById("count");
 const separator = document.getElementById("separator");
 const dedupe = document.getElementById("dedupe");
+const toast = document.getElementById("toast");
 
 input.value = localStorage.getItem("orders") || "";
 updateCount();
 
+/* تنظيف: أرقام فقط */
 function cleanInput(val){
     return val
         .replace(/[^0-9]+/g," ")
@@ -203,9 +221,17 @@ function cleanInput(val){
         .filter(Boolean);
 }
 
+/* إظهار إشعار */
+function showToast(msg){
+    toast.innerText = msg;
+    toast.style.display = "block";
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 1500);
+}
+
 function convert() {
     let lines = cleanInput(input.value);
-    let before = lines.length;
 
     if(dedupe.checked){
         lines = [...new Set(lines)];
@@ -213,7 +239,11 @@ function convert() {
 
     let output = lines.join(separator.value);
     result.innerText = output;
-    navigator.clipboard.writeText(output);
+
+    if(output){
+        navigator.clipboard.writeText(output);
+        showToast("Copied successfully ✔");
+    }
 
     localStorage.setItem("orders", input.value);
 }
