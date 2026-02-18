@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,23 +7,30 @@
 <title>Bulk Order Formatter – smmxhero</title>
 
 <style>
+/* ===== THEMES ===== */
 :root{
   --bg:#0f2027;
-  --card:rgba(0,0,0,.55);
+  --bg2:#203a43;
+  --card:#111;
   --text:#fff;
   --input:#fff;
+  --result:#1a1a1a;
   --accent:#00c6ff;
 }
 body.light{
-  --bg:#f2f2f2;
-  --card:#fff;
+  --bg:#f1f1f1;
+  --bg2:#e4e4e4;
+  --card:#ffffff;
   --text:#111;
-  --input:#eee;
+  --input:#eeeeee;
+  --result:#f7f7f7;
 }
+
+/* ===== BASE ===== */
 body{
   margin:0;
   min-height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  background:linear-gradient(135deg,var(--bg),var(--bg2));
   font-family:Tahoma,Arial;
   display:flex;
   align-items:center;
@@ -31,41 +38,37 @@ body{
   color:var(--text);
   transition:.3s;
 }
+
 .card{
-  width:560px;
+  width:580px;
   max-width:95%;
   background:var(--card);
   padding:22px;
   border-radius:16px;
-  box-shadow:0 15px 40px rgba(0,0,0,.5);
+  box-shadow:0 15px 40px rgba(0,0,0,.4);
 }
+
+/* ===== HEADER ===== */
 .header{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-.brand{
-  font-weight:bold;
-  font-size:18px;
-}
+.brand{font-weight:bold;font-size:18px}
 .icons span{
   cursor:pointer;
-  margin-left:10px;
+  margin-inline-start:12px;
   font-size:18px;
 }
-h2{
-  text-align:center;
-  margin:10px 0 4px;
-}
-.sub{
-  text-align:center;
-  font-size:13px;
-  opacity:.8;
-}
+
+/* ===== CONTENT ===== */
+h2{text-align:center;margin:10px 0 4px}
+.sub{text-align:center;font-size:13px;opacity:.8}
+
 textarea{
   width:100%;
   height:160px;
-  margin-top:10px;
+  margin-top:12px;
   border:none;
   border-radius:10px;
   padding:12px;
@@ -73,22 +76,21 @@ textarea{
   background:var(--input);
   font-size:15px;
 }
-.options{
+
+.options,.buttons{
   display:flex;
-  gap:8px;
-  margin:10px 0;
+  gap:10px;
+  margin-top:10px;
   flex-wrap:wrap;
 }
+
 select,button.small{
   padding:8px;
   border:none;
   border-radius:8px;
   cursor:pointer;
 }
-.buttons{
-  display:flex;
-  gap:10px;
-}
+
 button{
   flex:1;
   padding:12px;
@@ -98,21 +100,25 @@ button{
   color:#fff;
   cursor:pointer;
 }
-button.secondary{background:#555;}
+button.secondary{background:#555}
+
 .result{
   margin-top:12px;
-  background:#111;
+  background:var(--result);
   padding:10px;
   border-radius:10px;
   word-break:break-all;
   min-height:40px;
 }
+
 .footer{
   text-align:center;
   font-size:12px;
   margin-top:10px;
   opacity:.7;
 }
+
+/* ===== TOAST ===== */
 .toast{
   position:fixed;
   bottom:20px;
@@ -137,40 +143,41 @@ button.secondary{background:#555;}
     </div>
   </div>
 
-  <h2 id="title">Bulk Order Formatter</h2>
-  <div class="sub" id="subtitle">Convert order IDs instantly</div>
+  <h2 id="title"></h2>
+  <div class="sub" id="subtitle"></div>
 
-  <textarea id="input" placeholder="Paste order IDs here"></textarea>
+  <textarea id="input"></textarea>
 
   <div class="options">
     <select id="sep">
-      <option value=",">Comma (,)</option>
-      <option value="|">Pipe (|)</option>
-      <option value=";">Semicolon (;)</option>
+      <option value=",">,</option>
+      <option value="|">|</option>
+      <option value=";">;</option>
     </select>
-    <button class="small" onclick="paste()">Paste</button>
-    <button class="small" onclick="clearAll()">Clear</button>
+    <button class="small" id="pasteBtn" onclick="pasteText()"></button>
+    <button class="small" id="clearBtn" onclick="clearAll()"></button>
   </div>
 
   <div class="buttons">
-    <button onclick="convert()" id="convertBtn">Convert</button>
-    <button class="secondary" onclick="download()" id="downloadBtn">Download</button>
+    <button id="convertBtn" onclick="convert()"></button>
+    <button class="secondary" id="downloadBtn" onclick="download()"></button>
   </div>
 
   <div class="result" id="result"></div>
-
   <div class="footer">© smmxhero Tools</div>
 </div>
 
-<div class="toast" id="toast">Copied successfully</div>
+<div class="toast" id="toast"></div>
 
 <script>
-const texts={
+const t={
   en:{
     title:"Bulk Order Formatter",
     sub:"Convert order IDs instantly",
     convert:"Convert",
     download:"Download",
+    paste:"Paste",
+    clear:"Clear",
     copied:"Copied successfully",
     placeholder:"Paste order IDs here"
   },
@@ -179,6 +186,8 @@ const texts={
     sub:"تحويل أرقام الطلبات بسرعة",
     convert:"تحويل",
     download:"تحميل",
+    paste:"لصق",
+    clear:"مسح",
     copied:"تم النسخ بنجاح",
     placeholder:"ضع أرقام الطلبات هنا"
   }
@@ -188,32 +197,42 @@ let lang=localStorage.getItem("lang")||"en";
 let theme=localStorage.getItem("theme")||"dark";
 
 function applyLang(){
-  document.getElementById("title").innerText=texts[lang].title;
-  document.getElementById("subtitle").innerText=texts[lang].sub;
-  document.getElementById("convertBtn").innerText=texts[lang].convert;
-  document.getElementById("downloadBtn").innerText=texts[lang].download;
-  document.getElementById("toast").innerText=texts[lang].copied;
-  document.getElementById("input").placeholder=texts[lang].placeholder;
-  document.getElementById("langLabel").innerText=lang.toUpperCase();
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+
+  title.innerText=t[lang].title;
+  subtitle.innerText=t[lang].sub;
+  convertBtn.innerText=t[lang].convert;
+  downloadBtn.innerText=t[lang].download;
+  pasteBtn.innerText=t[lang].paste;
+  clearBtn.innerText=t[lang].clear;
+  toast.innerText=t[lang].copied;
+  input.placeholder=t[lang].placeholder;
+  langLabel.innerText=lang.toUpperCase();
 }
+
 function toggleLang(){
   lang=lang==="en"?"ar":"en";
   localStorage.setItem("lang",lang);
   applyLang();
 }
+
 function toggleTheme(){
   document.body.classList.toggle("light");
-  theme=document.body.classList.contains("light")?"light":"dark";
-  localStorage.setItem("theme",theme);
+  localStorage.setItem("theme",
+    document.body.classList.contains("light")?"light":"dark"
+  );
 }
+
 if(theme==="light") document.body.classList.add("light");
 applyLang();
 
+/* ===== ACTIONS ===== */
 function showToast(){
-  let t=document.getElementById("toast");
-  t.style.display="block";
-  setTimeout(()=>t.style.display="none",2000);
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",2000);
 }
+
 function convert(){
   let lines=input.value.split(/\s+/).filter(Boolean);
   let out=[...new Set(lines)].join(sep.value);
@@ -221,13 +240,16 @@ function convert(){
   navigator.clipboard.writeText(out);
   showToast();
 }
-function paste(){
+
+function pasteText(){
   navigator.clipboard.readText().then(t=>input.value=t);
 }
+
 function clearAll(){
   input.value="";
   result.innerText="";
 }
+
 function download(){
   if(!result.innerText) return;
   let a=document.createElement("a");
