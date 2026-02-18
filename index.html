@@ -36,11 +36,10 @@ body{
   align-items:center;
   justify-content:center;
   color:var(--text);
-  transition:.3s;
 }
 
 .card{
-  width:700px;
+  width:720px;
   max-width:96%;
   background:var(--card);
   padding:24px;
@@ -194,13 +193,23 @@ const text={
   }
 };
 
+/* 🔒 تنظيف الإدخال: أرقام فقط */
 function cleanInput(val){
   return val
-    .replace(/[^\d\n]/g," ")
+    .replace(/[^0-9]+/g," ")
+    .trim()
     .split(/\s+/)
     .filter(Boolean);
 }
 
+/* منع كتابة الحروف */
+input.addEventListener("keypress",(e)=>{
+  if(!/[0-9\s]/.test(e.key)){
+    e.preventDefault();
+  }
+});
+
+/* عداد مباشر */
 input.addEventListener("input",()=>{
   const clean=cleanInput(input.value);
   counter.innerText=text[lang].orders + clean.length;
