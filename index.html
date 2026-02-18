@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Bulk Order Formatter – smmxhero</title>
+<meta name="description" content="Free bulk order formatter tool by smmxhero">
 
 <style>
-/* ===== THEMES ===== */
 :root{
-  --bg:#0f2027;
+  --bg1:#0f2027;
   --bg2:#203a43;
   --card:#111;
   --text:#fff;
@@ -18,19 +18,18 @@
   --accent:#00c6ff;
 }
 body.light{
-  --bg:#f1f1f1;
-  --bg2:#e4e4e4;
+  --bg1:#f2f2f2;
+  --bg2:#e6e6e6;
   --card:#ffffff;
   --text:#111;
   --input:#eeeeee;
   --result:#f7f7f7;
 }
 
-/* ===== BASE ===== */
 body{
   margin:0;
   min-height:100vh;
-  background:linear-gradient(135deg,var(--bg),var(--bg2));
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
   font-family:Tahoma,Arial;
   display:flex;
   align-items:center;
@@ -40,15 +39,15 @@ body{
 }
 
 .card{
-  width:580px;
+  width:600px;
   max-width:95%;
   background:var(--card);
   padding:22px;
-  border-radius:16px;
-  box-shadow:0 15px 40px rgba(0,0,0,.4);
+  border-radius:18px;
+  box-shadow:0 15px 45px rgba(0,0,0,.45);
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 .header{
   display:flex;
   justify-content:space-between;
@@ -57,12 +56,12 @@ body{
 .brand{font-weight:bold;font-size:18px}
 .icons span{
   cursor:pointer;
-  margin-inline-start:12px;
+  margin-inline-start:14px;
   font-size:18px;
 }
 
-/* ===== CONTENT ===== */
-h2{text-align:center;margin:10px 0 4px}
+/* CONTENT */
+h2{text-align:center;margin:12px 0 4px}
 .sub{text-align:center;font-size:13px;opacity:.8}
 
 textarea{
@@ -70,7 +69,7 @@ textarea{
   height:160px;
   margin-top:12px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   padding:12px;
   resize:none;
   background:var(--input);
@@ -80,7 +79,7 @@ textarea{
 .options,.buttons{
   display:flex;
   gap:10px;
-  margin-top:10px;
+  margin-top:12px;
   flex-wrap:wrap;
 }
 
@@ -102,23 +101,30 @@ button{
 }
 button.secondary{background:#555}
 
+.counter{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.85;
+}
+
 .result{
-  margin-top:12px;
+  margin-top:10px;
   background:var(--result);
-  padding:10px;
-  border-radius:10px;
+  padding:12px;
+  border-radius:12px;
   word-break:break-all;
   min-height:40px;
 }
 
+/* FOOTER */
 .footer{
+  margin-top:14px;
   text-align:center;
   font-size:12px;
-  margin-top:10px;
-  opacity:.7;
+  opacity:.75;
 }
 
-/* ===== TOAST ===== */
+/* TOAST */
 .toast{
   position:fixed;
   bottom:20px;
@@ -163,8 +169,10 @@ button.secondary{background:#555}
     <button class="secondary" id="downloadBtn" onclick="download()"></button>
   </div>
 
+  <div class="counter" id="counter"></div>
   <div class="result" id="result"></div>
-  <div class="footer">© smmxhero Tools</div>
+
+  <div class="footer" id="footerText"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -179,7 +187,9 @@ const t={
     paste:"Paste",
     clear:"Clear",
     copied:"Copied successfully",
-    placeholder:"Paste order IDs here"
+    placeholder:"Paste order IDs here",
+    footer:"Powered by smmxhero.com – Free Bulk Tools",
+    counter:"Orders: "
   },
   ar:{
     title:"أداة تنسيق الطلبات",
@@ -189,7 +199,9 @@ const t={
     paste:"لصق",
     clear:"مسح",
     copied:"تم النسخ بنجاح",
-    placeholder:"ضع أرقام الطلبات هنا"
+    placeholder:"ضع أرقام الطلبات هنا",
+    footer:"مدعوم من smmxhero.com – أدوات مجانية",
+    counter:"عدد الطلبات: "
   }
 };
 
@@ -208,7 +220,9 @@ function applyLang(){
   clearBtn.innerText=t[lang].clear;
   toast.innerText=t[lang].copied;
   input.placeholder=t[lang].placeholder;
+  footerText.innerText=t[lang].footer;
   langLabel.innerText=lang.toUpperCase();
+  updateCounter();
 }
 
 function toggleLang(){
@@ -219,7 +233,8 @@ function toggleLang(){
 
 function toggleTheme(){
   document.body.classList.toggle("light");
-  localStorage.setItem("theme",
+  localStorage.setItem(
+    "theme",
     document.body.classList.contains("light")?"light":"dark"
   );
 }
@@ -227,27 +242,39 @@ function toggleTheme(){
 if(theme==="light") document.body.classList.add("light");
 applyLang();
 
-/* ===== ACTIONS ===== */
+/* ACTIONS */
 function showToast(){
   toast.style.display="block";
   setTimeout(()=>toast.style.display="none",2000);
 }
 
+function updateCounter(){
+  let lines=input.value.split(/\s+/).filter(Boolean);
+  counter.innerText=t[lang].counter + lines.length;
+}
+
+input.addEventListener("input",updateCounter);
+
 function convert(){
   let lines=input.value.split(/\s+/).filter(Boolean);
-  let out=[...new Set(lines)].join(sep.value);
+  let unique=[...new Set(lines)];
+  let out=unique.join(sep.value);
   result.innerText=out;
   navigator.clipboard.writeText(out);
   showToast();
 }
 
 function pasteText(){
-  navigator.clipboard.readText().then(t=>input.value=t);
+  navigator.clipboard.readText().then(text=>{
+    input.value=text;
+    updateCounter();
+  });
 }
 
 function clearAll(){
   input.value="";
   result.innerText="";
+  updateCounter();
 }
 
 function download(){
