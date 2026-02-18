@@ -36,11 +36,10 @@ body{
   align-items:center;
   justify-content:center;
   color:var(--text);
-  transition:.3s;
 }
 
 .card{
-  width:700px;
+  width:720px;
   max-width:96%;
   background:var(--card);
   padding:24px;
@@ -89,6 +88,7 @@ button{
   cursor:pointer;
 }
 button.secondary{background:#374151}
+button.danger{background:#7f1d1d}
 
 .counter{
   margin-top:8px;
@@ -155,6 +155,7 @@ button.secondary{background:#374151}
   <div class="row">
     <button onclick="convert()" id="convertBtn">Convert</button>
     <button class="secondary" onclick="copyResult()" id="copyBtn">Copy</button>
+    <button class="danger" onclick="clearAll()" id="clearBtn">Clear</button>
   </div>
 
   <div class="counter" id="counter">Orders: 0</div>
@@ -172,75 +173,4 @@ let lang="en";
 const input=document.getElementById("input");
 const result=document.getElementById("result");
 const counter=document.getElementById("counter");
-const meta=document.getElementById("meta");
-const toast=document.getElementById("toast");
-
-const text={
-  en:{
-    title:"Bulk Order Formatter",
-    sub:"Convert order IDs instantly",
-    orders:"Orders: ",
-    copied:"Copied successfully",
-    meta:(a,b)=>Converted: ${a} orders – Removed: ${b} duplicates,
-    placeholder:"Paste order IDs here"
-  },
-  ar:{
-    title:"أداة تنسيق الطلبات",
-    sub:"تحويل أرقام الطلبات بسرعة",
-    orders:"عدد الطلبات: ",
-    copied:"تم النسخ بنجاح",
-    meta:(a,b)=>تم التحويل: ${a} طلب – تم حذف: ${b} مكرر,
-    placeholder:"ضع أرقام الطلبات هنا"
-  }
-};
-
-function cleanInput(val){
-  return val
-    .replace(/[^\d\n]/g," ")
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-input.addEventListener("input",()=>{
-  const clean=cleanInput(input.value);
-  counter.innerText=text[lang].orders + clean.length;
-});
-
-function convert(){
-  const clean=cleanInput(input.value);
-  const before=clean.length;
-  const unique=[...new Set(clean)];
-  const after=unique.length;
-
-  result.innerText=unique.join(",");
-  meta.innerText=text[lang].meta(after,before-after);
-
-  result.classList.add("animate");
-  setTimeout(()=>result.classList.remove("animate"),300);
-}
-
-function copyResult(){
-  if(!result.innerText) return;
-  navigator.clipboard.writeText(result.innerText);
-  toast.innerText=text[lang].copied;
-  toast.style.display="block";
-  setTimeout(()=>toast.style.display="none",1500);
-}
-
-function toggleLang(){
-  lang=lang==="en"?"ar":"en";
-  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-  document.getElementById("langLabel").innerText=lang.toUpperCase();
-  title.innerText=text[lang].title;
-  subtitle.innerText=text[lang].sub;
-  input.placeholder=text[lang].placeholder;
-  counter.innerText=text[lang].orders + cleanInput(input.value).length;
-}
-
-function toggleTheme(){
-  document.body.classList.toggle("light");
-}
-</script>
-
-</body>
-</html>
+const meta=document.getEle
