@@ -4,18 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title id="pageTitle">Bulk Order Formatter – smmxhero</title>
-<meta name="description" content="Professional bulk order formatter tool by smmxhero for SMM panels.">
-<meta name="keywords" content="bulk order formatter, smm tools, order id formatter">
-
-<!-- Analytics (ضع ID بتاعك) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XXXXXXX');
-</script>
+<title>Bulk Order Formatter – smmxhero</title>
 
 <style>
 :root{
@@ -42,42 +31,37 @@ body{
   margin:0;
   min-height:100vh;
   background:linear-gradient(135deg,var(--bg1),var(--bg2));
-  font-family:Inter,Tahoma,Arial;
+  font-family:Tahoma,Arial;
   display:flex;
   align-items:center;
   justify-content:center;
   color:var(--text);
+  transition:.3s;
 }
 
 .card{
-  width:680px;
+  width:700px;
   max-width:96%;
   background:var(--card);
   padding:24px;
-  border-radius:20px;
+  border-radius:22px;
   box-shadow:0 20px 50px rgba(0,0,0,.45);
 }
 
-/* Header */
 .header{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-.brand{font-weight:600;font-size:18px}
-.icons span{
-  cursor:pointer;
-  margin-inline-start:14px;
-  font-size:18px;
-}
+.brand{font-weight:bold;font-size:18px}
+.icons span{cursor:pointer;margin-left:14px}
 
-/* Content */
 h2{text-align:center;margin:14px 0 6px}
 .sub{text-align:center;font-size:13px;color:var(--muted)}
 
 textarea{
   width:100%;
-  height:180px;
+  height:190px;
   margin-top:14px;
   border:none;
   border-radius:14px;
@@ -95,47 +79,43 @@ textarea{
   flex-wrap:wrap;
 }
 
-select,label{
-  font-size:13px;
-}
-
 button{
+  flex:1;
   padding:12px;
   border:none;
   border-radius:12px;
   background:var(--accent);
   color:#fff;
   cursor:pointer;
-  flex:1;
 }
 button.secondary{background:#374151}
-button.ghost{
-  background:#020617;
-  color:#e5e7eb;
-}
 
-/* Result */
-.result{
-  margin-top:14px;
-  background:var(--result);
-  padding:16px;
-  border-radius:16px;
-  word-break:break-all;
-  min-height:80px;
-  transition:.25s;
-}
-.result.animate{
-  transform:scale(1.02);
-  box-shadow:0 0 0 2px var(--accent);
-}
-
-.meta{
+.counter{
   margin-top:8px;
   font-size:13px;
   color:var(--muted);
 }
 
-/* Footer */
+.result{
+  margin-top:14px;
+  background:var(--result);
+  padding:18px;
+  border-radius:18px;
+  min-height:90px;
+  word-break:break-all;
+  transition:.25s;
+}
+.result.animate{
+  box-shadow:0 0 0 2px var(--accent);
+  transform:scale(1.02);
+}
+
+.meta{
+  margin-top:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
 .footer{
   margin-top:16px;
   text-align:center;
@@ -143,7 +123,6 @@ button.ghost{
   color:var(--muted);
 }
 
-/* Toast */
 .toast{
   position:fixed;
   bottom:20px;
@@ -168,155 +147,99 @@ button.ghost{
     </div>
   </div>
 
-  <h2 id="title"></h2>
-  <div class="sub" id="subtitle"></div>
+  <h2 id="title">Bulk Order Formatter</h2>
+  <div class="sub" id="subtitle">Convert order IDs instantly</div>
 
-  <textarea id="input"></textarea>
+  <textarea id="input" placeholder="Paste order IDs here"></textarea>
 
-  <!-- OPTIONS -->
   <div class="row">
-    <select id="sep">
-      <option value=",">Comma (,)</option>
-      <option value="|">Pipe (|)</option>
-      <option value=";">Semicolon (;)</option>
-    </select>
-
-    <label>
-      <input type="checkbox" id="dedupe" checked>
-      <span id="dedupeLabel"></span>
-    </label>
-
-    <label>
-      <input type="checkbox" id="autoCopy" checked>
-      <span id="autoCopyLabel"></span>
-    </label>
+    <button onclick="convert()" id="convertBtn">Convert</button>
+    <button class="secondary" onclick="copyResult()" id="copyBtn">Copy</button>
   </div>
 
-  <!-- ACTIONS -->
-  <div class="row">
-    <button onclick="convert()" id="convertBtn"></button>
-    <button class="secondary" onclick="copyResult()" id="copyBtn"></button>
-    <button class="ghost" onclick="clearAll()" id="clearBtn"></button>
-  </div>
-
+  <div class="counter" id="counter">Orders: 0</div>
   <div class="result" id="result"></div>
   <div class="meta" id="meta"></div>
 
-  <div class="footer" id="footerText"></div>
+  <div class="footer">Powered by smmxhero.com</div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">Copied successfully</div>
 
 <script>
-const t={
+let lang="en";
+
+const input=document.getElementById("input");
+const result=document.getElementById("result");
+const counter=document.getElementById("counter");
+const meta=document.getElementById("meta");
+const toast=document.getElementById("toast");
+
+const text={
   en:{
     title:"Bulk Order Formatter",
-    sub:"Professional tool for formatting bulk order IDs",
-    convert:"Convert",
-    copy:"Copy",
-    clear:"Clear",
-    dedupe:"Remove duplicates",
-    autoCopy:"Auto copy",
+    sub:"Convert order IDs instantly",
+    orders:"Orders: ",
     copied:"Copied successfully",
-    placeholder:"Paste order IDs here",
-    footer:"Powered by smmxhero.com",
-    meta:(x,y)=>`Converted: ${x} orders – Removed: ${y} duplicates`,
-    pageTitle:"Bulk Order Formatter – smmxhero"
+    meta:(a,b)=>`Converted: ${a} orders – Removed: ${b} duplicates`,
+    placeholder:"Paste order IDs here"
   },
   ar:{
     title:"أداة تنسيق الطلبات",
-    sub:"أداة احترافية لتنسيق أرقام الطلبات",
-    convert:"تحويل",
-    copy:"نسخ",
-    clear:"مسح",
-    dedupe:"إزالة التكرار",
-    autoCopy:"نسخ تلقائي",
+    sub:"تحويل أرقام الطلبات بسرعة",
+    orders:"عدد الطلبات: ",
     copied:"تم النسخ بنجاح",
-    placeholder:"ضع أرقام الطلبات هنا",
-    footer:"مدعوم من smmxhero.com",
-    meta:(x,y)=>`تم التحويل: ${x} طلب – تم حذف: ${y} مكرر`,
-    pageTitle:"أداة تنسيق الطلبات – smmxhero"
+    meta:(a,b)=>`تم التحويل: ${a} طلب – تم حذف: ${b} مكرر`,
+    placeholder:"ضع أرقام الطلبات هنا"
   }
 };
 
-let lang=localStorage.getItem("lang")||"en";
-let theme=localStorage.getItem("theme")||"dark";
-let savedSep=localStorage.getItem("sep")||",";
-
-sep.value=savedSep;
-if(theme==="light") document.body.classList.add("light");
-
-function applyLang(){
-  document.documentElement.lang=lang;
-  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-  pageTitle.innerText=t[lang].pageTitle;
-  title.innerText=t[lang].title;
-  subtitle.innerText=t[lang].sub;
-  convertBtn.innerText=t[lang].convert;
-  copyBtn.innerText=t[lang].copy;
-  clearBtn.innerText=t[lang].clear;
-  dedupeLabel.innerText=t[lang].dedupe;
-  autoCopyLabel.innerText=t[lang].autoCopy;
-  toast.innerText=t[lang].copied;
-  input.placeholder=t[lang].placeholder;
-  footerText.innerText=t[lang].footer;
-  langLabel.innerText=lang.toUpperCase();
-}
-applyLang();
-
-function toggleLang(){
-  lang=lang==="en"?"ar":"en";
-  localStorage.setItem("lang",lang);
-  applyLang();
-}
-function toggleTheme(){
-  document.body.classList.toggle("light");
-  localStorage.setItem("theme",
-    document.body.classList.contains("light")?"light":"dark");
+function cleanInput(val){
+  return val
+    .replace(/[^\d\n]/g," ")
+    .split(/\s+/)
+    .filter(Boolean);
 }
 
-sep.onchange=()=>localStorage.setItem("sep",sep.value);
-
-function showToast(){
-  toast.style.display="block";
-  setTimeout(()=>toast.style.display="none",1800);
-}
+input.addEventListener("input",()=>{
+  const clean=cleanInput(input.value);
+  counter.innerText=text[lang].orders + clean.length;
+});
 
 function convert(){
-  let lines=input.value.split(/\s+/).filter(Boolean);
-  let original=lines.length;
-  let final=dedupe.checked?[...new Set(lines)]:lines;
-  let removed=original-final.length;
+  const clean=cleanInput(input.value);
+  const before=clean.length;
+  const unique=[...new Set(clean)];
+  const after=unique.length;
 
-  result.innerText=final.join(sep.value);
-  meta.innerText=t[lang].meta(final.length,removed);
+  result.innerText=unique.join(",");
+  meta.innerText=text[lang].meta(after,before-after);
 
   result.classList.add("animate");
   setTimeout(()=>result.classList.remove("animate"),300);
-
-  if(autoCopy.checked){
-    navigator.clipboard.writeText(result.innerText);
-    showToast();
-  }
 }
 
 function copyResult(){
   if(!result.innerText) return;
   navigator.clipboard.writeText(result.innerText);
-  showToast();
+  toast.innerText=text[lang].copied;
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",1500);
 }
 
-function clearAll(){
-  input.value="";
-  result.innerText="";
-  meta.innerText="";
+function toggleLang(){
+  lang=lang==="en"?"ar":"en";
+  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.getElementById("langLabel").innerText=lang.toUpperCase();
+  title.innerText=text[lang].title;
+  subtitle.innerText=text[lang].sub;
+  input.placeholder=text[lang].placeholder;
+  counter.innerText=text[lang].orders + cleanInput(input.value).length;
 }
 
-/* Shortcuts */
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey && e.key==="v") navigator.clipboard.readText().then(t=>input.value=t);
-  if(e.ctrlKey && e.key==="c") copyResult();
-});
+function toggleTheme(){
+  document.body.classList.toggle("light");
+}
 </script>
 
 </body>
