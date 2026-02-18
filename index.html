@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Formatter Pro – smmxhero Tools</title>
+
+<title>Bulk Order Formatter Tool – smmxhero</title>
+<meta name="description" content="Free bulk order formatter tool by smmxhero. Convert order IDs into comma-separated format instantly.">
 
 <style>
 :root {
     --bg: #0f2027;
-    --card: rgba(0,0,0,0.5);
+    --card: rgba(0,0,0,0.55);
     --text: #ffffff;
     --input: #ffffff;
+    --accent: #00c6ff;
 }
 
 body.light {
     --bg: #f2f2f2;
     --card: #ffffff;
-    --text: #111111;
+    --text: #111;
     --input: #eeeeee;
 }
 
@@ -35,22 +38,31 @@ body {
 .card {
     background: var(--card);
     padding: 25px;
-    width: 520px;
-    max-width: 92%;
-    border-radius: 15px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    width: 560px;
+    max-width: 95%;
+    border-radius: 16px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.5);
 }
 
-h2 {
+.header {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.header h2 {
+    margin: 5px 0;
+}
+
+.header span {
+    font-size: 13px;
+    opacity: 0.8;
 }
 
 .top-bar {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
-    margin-bottom: 10px;
+    font-size: 13px;
+    margin-bottom: 8px;
 }
 
 textarea {
@@ -63,6 +75,21 @@ textarea {
     font-size: 15px;
     outline: none;
     background: var(--input);
+}
+
+.options {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+
+select, button.small {
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .buttons {
@@ -79,12 +106,11 @@ button {
     font-size: 15px;
     cursor: pointer;
     background: linear-gradient(135deg, #00c6ff, #0072ff);
-    color: #ffffff;
-    transition: 0.3s;
+    color: #fff;
 }
 
 button.secondary {
-    background: #555555;
+    background: #555;
 }
 
 button:hover {
@@ -93,7 +119,7 @@ button:hover {
 
 .result {
     margin-top: 15px;
-    background: #111111;
+    background: #111;
     padding: 12px;
     border-radius: 10px;
     word-break: break-all;
@@ -101,11 +127,11 @@ button:hover {
     min-height: 40px;
 }
 
-.copy-msg {
+.footer {
     text-align: center;
-    margin-top: 8px;
-    color: #00ffae;
-    display: none;
+    font-size: 12px;
+    margin-top: 10px;
+    opacity: 0.7;
 }
 </style>
 </head>
@@ -113,53 +139,89 @@ button:hover {
 <body>
 
 <div class="card">
-    <h2>Order Formatter Pro</h2>
+    <div class="header">
+        <h2>Bulk Order Formatter</h2>
+        <span>smmxhero Tools</span>
+    </div>
 
     <div class="top-bar">
-        <span id="count">عدد الطلبات: 0</span>
+        <span id="count">Orders: 0</span>
         <span style="cursor:pointer" onclick="toggleMode()">🌙 / ☀</span>
     </div>
 
-    <textarea id="input" placeholder="حط كل رقم في سطر" oninput="updateCount()"></textarea>
+    <textarea id="input" placeholder="Paste order IDs here (one per line)"></textarea>
+
+    <div class="options">
+        <select id="separator">
+            <option value=",">Comma (,)</option>
+            <option value="|">Pipe (|)</option>
+            <option value=";">Semicolon (;)</option>
+        </select>
+
+        <button class="small" onclick="pasteClipboard()">Paste</button>
+        <button class="small" onclick="clearAll()">Clear</button>
+    </div>
 
     <div class="buttons">
-        <button onclick="convert()">تحويل + نسخ</button>
-        <button class="secondary" onclick="clearAll()">مسح</button>
+        <button onclick="convert()">Convert</button>
+        <button class="secondary" onclick="download()">Download TXT</button>
     </div>
 
     <div class="result" id="result"></div>
-    <div class="copy-msg" id="copyMsg">✔ تم النسخ تلقائيًا</div>
+
+    <div class="footer">
+        © smmxhero.com – Free Tool
+    </div>
 </div>
 
 <script>
 const input = document.getElementById("input");
 const result = document.getElementById("result");
 const count = document.getElementById("count");
-const copyMsg = document.getElementById("copyMsg");
+const separator = document.getElementById("separator");
+
+input.value = localStorage.getItem("orders") || "";
+updateCount();
 
 function convert() {
-    let text = input.value.trim();
-    if (!text) return;
-
-    let orders = text.split(/\s+/).filter(Boolean);
-    let output = orders.join(",");
+    let lines = input.value.split(/\s+/).filter(Boolean);
+    let unique = [...new Set(lines)];
+    let output = unique.join(separator.value);
 
     result.innerText = output;
     navigator.clipboard.writeText(output);
 
-    copyMsg.style.display = "block";
-    setTimeout(() => copyMsg.style.display = "none", 2000);
+    localStorage.setItem("orders", input.value);
 }
 
 function clearAll() {
     input.value = "";
     result.innerText = "";
-    count.innerText = "عدد الطلبات: 0";
+    updateCount();
+    localStorage.removeItem("orders");
 }
 
 function updateCount() {
-    let orders = input.value.split(/\s+/).filter(Boolean);
-    count.innerText = "عدد الطلبات: " + orders.length;
+    let lines = input.value.split(/\s+/).filter(Boolean);
+    count.innerText = "Orders: " + lines.length;
+}
+
+input.addEventListener("input", updateCount);
+
+function pasteClipboard() {
+    navigator.clipboard.readText().then(text => {
+        input.value = text;
+        updateCount();
+    });
+}
+
+function download() {
+    if(!result.innerText) return;
+    let blob = new Blob([result.innerText], { type: "text/plain" });
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "orders.txt";
+    a.click();
 }
 
 function toggleMode() {
