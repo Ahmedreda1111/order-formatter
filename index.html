@@ -36,10 +36,11 @@ body{
   align-items:center;
   justify-content:center;
   color:var(--text);
+  transition:.3s;
 }
 
 .card{
-  width:720px;
+  width:700px;
   max-width:96%;
   background:var(--card);
   padding:24px;
@@ -180,7 +181,7 @@ const text={
     sub:"Convert order IDs instantly",
     orders:"Orders: ",
     copied:"Copied successfully",
-    meta:(a,b)=>`Converted: ${a} orders – Removed: ${b} duplicates`,
+    meta:(a,b)=>Converted: ${a} orders – Removed: ${b} duplicates,
     placeholder:"Paste order IDs here"
   },
   ar:{
@@ -188,28 +189,18 @@ const text={
     sub:"تحويل أرقام الطلبات بسرعة",
     orders:"عدد الطلبات: ",
     copied:"تم النسخ بنجاح",
-    meta:(a,b)=>`تم التحويل: ${a} طلب – تم حذف: ${b} مكرر`,
+    meta:(a,b)=>تم التحويل: ${a} طلب – تم حذف: ${b} مكرر,
     placeholder:"ضع أرقام الطلبات هنا"
   }
 };
 
-/* 🔒 تنظيف الإدخال: أرقام فقط */
 function cleanInput(val){
   return val
-    .replace(/[^0-9]+/g," ")
-    .trim()
+    .replace(/[^\d\n]/g," ")
     .split(/\s+/)
     .filter(Boolean);
 }
 
-/* منع كتابة الحروف */
-input.addEventListener("keypress",(e)=>{
-  if(!/[0-9\s]/.test(e.key)){
-    e.preventDefault();
-  }
-});
-
-/* عداد مباشر */
 input.addEventListener("input",()=>{
   const clean=cleanInput(input.value);
   counter.innerText=text[lang].orders + clean.length;
