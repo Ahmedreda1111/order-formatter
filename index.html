@@ -79,9 +79,15 @@ textarea {
 
 .options {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin: 10px 0;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.options label {
+    font-size: 13px;
+    cursor: pointer;
 }
 
 select, button.small {
@@ -158,6 +164,11 @@ button:hover {
             <option value=";">Semicolon (;)</option>
         </select>
 
+        <label>
+            <input type="checkbox" id="dedupe" checked>
+            Remove duplicates
+        </label>
+
         <button class="small" onclick="pasteClipboard()">Paste</button>
         <button class="small" onclick="clearAll()">Clear</button>
     </div>
@@ -179,15 +190,28 @@ const input = document.getElementById("input");
 const result = document.getElementById("result");
 const count = document.getElementById("count");
 const separator = document.getElementById("separator");
+const dedupe = document.getElementById("dedupe");
 
 input.value = localStorage.getItem("orders") || "";
 updateCount();
 
-function convert() {
-    let lines = input.value.split(/\s+/).filter(Boolean);
-    let unique = [...new Set(lines)];
-    let output = unique.join(separator.value);
+function cleanInput(val){
+    return val
+        .replace(/[^0-9]+/g," ")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+}
 
+function convert() {
+    let lines = cleanInput(input.value);
+    let before = lines.length;
+
+    if(dedupe.checked){
+        lines = [...new Set(lines)];
+    }
+
+    let output = lines.join(separator.value);
     result.innerText = output;
     navigator.clipboard.writeText(output);
 
@@ -202,7 +226,7 @@ function clearAll() {
 }
 
 function updateCount() {
-    let lines = input.value.split(/\s+/).filter(Boolean);
+    let lines = cleanInput(input.value);
     count.innerText = "Orders: " + lines.length;
 }
 
