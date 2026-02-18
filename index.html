@@ -221,4 +221,103 @@ const t={
     placeholder:"Paste order IDs here",
     footer:"Powered by smmxhero.com",
     meta:(x,y)=>`Converted: ${x} orders – Removed: ${y} duplicates`,
-    pageTit
+    pageTitle:"Bulk Order Formatter – smmxhero"
+  },
+  ar:{
+    title:"أداة تنسيق الطلبات",
+    sub:"أداة احترافية لتنسيق أرقام الطلبات",
+    convert:"تحويل",
+    copy:"نسخ",
+    clear:"مسح",
+    dedupe:"إزالة التكرار",
+    autoCopy:"نسخ تلقائي",
+    copied:"تم النسخ بنجاح",
+    placeholder:"ضع أرقام الطلبات هنا",
+    footer:"مدعوم من smmxhero.com",
+    meta:(x,y)=>`تم التحويل: ${x} طلب – تم حذف: ${y} مكرر`,
+    pageTitle:"أداة تنسيق الطلبات – smmxhero"
+  }
+};
+
+let lang=localStorage.getItem("lang")||"en";
+let theme=localStorage.getItem("theme")||"dark";
+let savedSep=localStorage.getItem("sep")||",";
+
+sep.value=savedSep;
+if(theme==="light") document.body.classList.add("light");
+
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  pageTitle.innerText=t[lang].pageTitle;
+  title.innerText=t[lang].title;
+  subtitle.innerText=t[lang].sub;
+  convertBtn.innerText=t[lang].convert;
+  copyBtn.innerText=t[lang].copy;
+  clearBtn.innerText=t[lang].clear;
+  dedupeLabel.innerText=t[lang].dedupe;
+  autoCopyLabel.innerText=t[lang].autoCopy;
+  toast.innerText=t[lang].copied;
+  input.placeholder=t[lang].placeholder;
+  footerText.innerText=t[lang].footer;
+  langLabel.innerText=lang.toUpperCase();
+}
+applyLang();
+
+function toggleLang(){
+  lang=lang==="en"?"ar":"en";
+  localStorage.setItem("lang",lang);
+  applyLang();
+}
+function toggleTheme(){
+  document.body.classList.toggle("light");
+  localStorage.setItem("theme",
+    document.body.classList.contains("light")?"light":"dark");
+}
+
+sep.onchange=()=>localStorage.setItem("sep",sep.value);
+
+function showToast(){
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",1800);
+}
+
+function convert(){
+  let lines=input.value.split(/\s+/).filter(Boolean);
+  let original=lines.length;
+  let final=dedupe.checked?[...new Set(lines)]:lines;
+  let removed=original-final.length;
+
+  result.innerText=final.join(sep.value);
+  meta.innerText=t[lang].meta(final.length,removed);
+
+  result.classList.add("animate");
+  setTimeout(()=>result.classList.remove("animate"),300);
+
+  if(autoCopy.checked){
+    navigator.clipboard.writeText(result.innerText);
+    showToast();
+  }
+}
+
+function copyResult(){
+  if(!result.innerText) return;
+  navigator.clipboard.writeText(result.innerText);
+  showToast();
+}
+
+function clearAll(){
+  input.value="";
+  result.innerText="";
+  meta.innerText="";
+}
+
+/* Shortcuts */
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey && e.key==="v") navigator.clipboard.readText().then(t=>input.value=t);
+  if(e.ctrlKey && e.key==="c") copyResult();
+});
+</script>
+
+</body>
+</html>
