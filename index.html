@@ -1,137 +1,137 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bulk Order Formatter – smmxhero</title>
+<title>Bulk Order Formatter Tool – smmxhero</title>
+<meta name="description" content="Free bulk order formatter tool by smmxhero. Convert order IDs into comma-separated format instantly.">
 
 <style>
-:root{
-  --bg1:#1f2933;
-  --bg2:#111827;
-  --card:#0b1220;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --input:#111827;
-  --result:#020617;
-  --accent:#2563eb;
-}
-body.light{
-  --bg1:#f3f4f6;
-  --bg2:#e5e7eb;
-  --card:#ffffff;
-  --text:#111827;
-  --muted:#6b7280;
-  --input:#f9fafb;
-  --result:#f3f4f6;
+:root {
+    --bg: #0f2027;
+    --card: rgba(0,0,0,0.55);
+    --text: #ffffff;
+    --input: #ffffff;
+    --accent: #00c6ff;
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2));
-  font-family:Tahoma,Arial;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--text);
+body.light {
+    --bg: #f2f2f2;
+    --card: #ffffff;
+    --text: #111;
+    --input: #eeeeee;
 }
 
-.card{
-  width:720px;
-  max-width:96%;
-  background:var(--card);
-  padding:24px;
-  border-radius:22px;
-  box-shadow:0 20px 50px rgba(0,0,0,.45);
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: Tahoma, Arial;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: 0.3s;
 }
 
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.brand{font-weight:bold;font-size:18px}
-.icons span{cursor:pointer;margin-left:14px}
-
-h2{text-align:center;margin:14px 0 6px}
-.sub{text-align:center;font-size:13px;color:var(--muted)}
-
-textarea{
-  width:100%;
-  height:190px;
-  margin-top:14px;
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  resize:none;
-  background:var(--input);
-  color:var(--text);
-  font-size:15px;
+.card {
+    background: var(--card);
+    padding: 25px;
+    width: 560px;
+    max-width: 95%;
+    border-radius: 16px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.5);
 }
 
-.row{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-  flex-wrap:wrap;
+.header {
+    text-align: center;
+    margin-bottom: 15px;
 }
 
-button{
-  flex:1;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:var(--accent);
-  color:#fff;
-  cursor:pointer;
-}
-button.secondary{background:#374151}
-button.danger{background:#7f1d1d}
-
-.counter{
-  margin-top:8px;
-  font-size:13px;
-  color:var(--muted);
+.header h2 {
+    margin: 5px 0;
 }
 
-.result{
-  margin-top:14px;
-  background:var(--result);
-  padding:18px;
-  border-radius:18px;
-  min-height:90px;
-  word-break:break-all;
-  transition:.25s;
-}
-.result.animate{
-  box-shadow:0 0 0 2px var(--accent);
-  transform:scale(1.02);
+.header span {
+    font-size: 13px;
+    opacity: 0.8;
 }
 
-.meta{
-  margin-top:6px;
-  font-size:13px;
-  color:var(--muted);
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
 }
 
-.footer{
-  margin-top:16px;
-  text-align:center;
-  font-size:12px;
-  color:var(--muted);
+textarea {
+    width: 100%;
+    height: 170px;
+    resize: none;
+    border-radius: 10px;
+    border: none;
+    padding: 12px;
+    font-size: 15px;
+    outline: none;
+    background: var(--input);
 }
 
-.toast{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#16a34a;
-  color:#fff;
-  padding:10px 14px;
-  border-radius:10px;
-  display:none;
+.options {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+
+select, button.small {
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+}
+
+button.secondary {
+    background: #555;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+.result {
+    margin-top: 15px;
+    background: #111;
+    padding: 12px;
+    border-radius: 10px;
+    word-break: break-all;
+    font-size: 14px;
+    min-height: 40px;
+}
+
+.footer {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 10px;
+    opacity: 0.7;
 }
 </style>
 </head>
@@ -139,38 +139,95 @@ button.danger{background:#7f1d1d}
 <body>
 
 <div class="card">
-  <div class="header">
-    <div class="brand">smmxhero</div>
-    <div class="icons">
-      <span onclick="toggleLang()">🌍 <b id="langLabel">EN</b></span>
-      <span onclick="toggleTheme()">🌙</span>
+    <div class="header">
+        <h2>Bulk Order Formatter</h2>
+        <span>smmxhero Tools</span>
     </div>
-  </div>
 
-  <h2 id="title">Bulk Order Formatter</h2>
-  <div class="sub" id="subtitle">Convert order IDs instantly</div>
+    <div class="top-bar">
+        <span id="count">Orders: 0</span>
+        <span style="cursor:pointer" onclick="toggleMode()">🌙 / ☀</span>
+    </div>
 
-  <textarea id="input" placeholder="Paste order IDs here"></textarea>
+    <textarea id="input" placeholder="Paste order IDs here (one per line)"></textarea>
 
-  <div class="row">
-    <button onclick="convert()" id="convertBtn">Convert</button>
-    <button class="secondary" onclick="copyResult()" id="copyBtn">Copy</button>
-    <button class="danger" onclick="clearAll()" id="clearBtn">Clear</button>
-  </div>
+    <div class="options">
+        <select id="separator">
+            <option value=",">Comma (,)</option>
+            <option value="|">Pipe (|)</option>
+            <option value=";">Semicolon (;)</option>
+        </select>
 
-  <div class="counter" id="counter">Orders: 0</div>
-  <div class="result" id="result"></div>
-  <div class="meta" id="meta"></div>
+        <button class="small" onclick="pasteClipboard()">Paste</button>
+        <button class="small" onclick="clearAll()">Clear</button>
+    </div>
 
-  <div class="footer">Powered by smmxhero.com</div>
+    <div class="buttons">
+        <button onclick="convert()">Convert</button>
+        <button class="secondary" onclick="download()">Download TXT</button>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <div class="footer">
+        © smmxhero.com – Free Tool
+    </div>
 </div>
 
-<div class="toast" id="toast">Copied successfully</div>
-
 <script>
-let lang="en";
+const input = document.getElementById("input");
+const result = document.getElementById("result");
+const count = document.getElementById("count");
+const separator = document.getElementById("separator");
 
-const input=document.getElementById("input");
-const result=document.getElementById("result");
-const counter=document.getElementById("counter");
-const meta=document.getEle
+input.value = localStorage.getItem("orders") || "";
+updateCount();
+
+function convert() {
+    let lines = input.value.split(/\s+/).filter(Boolean);
+    let unique = [...new Set(lines)];
+    let output = unique.join(separator.value);
+
+    result.innerText = output;
+    navigator.clipboard.writeText(output);
+
+    localStorage.setItem("orders", input.value);
+}
+
+function clearAll() {
+    input.value = "";
+    result.innerText = "";
+    updateCount();
+    localStorage.removeItem("orders");
+}
+
+function updateCount() {
+    let lines = input.value.split(/\s+/).filter(Boolean);
+    count.innerText = "Orders: " + lines.length;
+}
+
+input.addEventListener("input", updateCount);
+
+function pasteClipboard() {
+    navigator.clipboard.readText().then(text => {
+        input.value = text;
+        updateCount();
+    });
+}
+
+function download() {
+    if(!result.innerText) return;
+    let blob = new Blob([result.innerText], { type: "text/plain" });
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "orders.txt";
+    a.click();
+}
+
+function toggleMode() {
+    document.body.classList.toggle("light");
+}
+</script>
+
+</body>
+</html>
