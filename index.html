@@ -57,7 +57,6 @@ body {
     padding: 25px;
     border-radius: 20px;
     box-shadow: 0 0 50px rgba(37,99,235,0.3);
-    animation: fadeIn 1s ease;
 }
 
 /* Logo */
@@ -65,14 +64,7 @@ body {
     width: 140px;
     display: block;
     margin: auto;
-    animation: glowFloat 3s infinite;
     filter: drop-shadow(0 0 30px #3b82f6);
-}
-
-@keyframes glowFloat {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
 }
 
 .brand {
@@ -97,21 +89,13 @@ textarea {
     color: white;
 }
 
-/* Options */
-.options {
-    display: flex;
-    gap: 10px;
-    margin: 10px 0;
-    flex-wrap: wrap;
-}
-
 select {
+    width: 100%;
     padding: 10px;
     border-radius: 10px;
-    border: none;
+    margin-top: 10px;
 }
 
-/* Buttons */
 button {
     width: 100%;
     padding: 12px;
@@ -123,12 +107,13 @@ button {
     margin-top: 10px;
 }
 
-button:hover {
-    transform: scale(1.03);
+.copy-btn {
+    background: #22c55e;
 }
 
-.secondary {
-    background: #555;
+/* CTA */
+.cta button {
+    background: linear-gradient(90deg,#f59e0b,#facc15);
 }
 
 /* Result */
@@ -138,18 +123,6 @@ button:hover {
     padding: 12px;
     border-radius: 10px;
     min-height: 40px;
-}
-
-/* CTA */
-.cta button {
-    animation: pulseBtn 1.5s infinite;
-    background: linear-gradient(90deg,#f59e0b,#facc15);
-}
-
-@keyframes pulseBtn {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
 }
 
 /* Toast */
@@ -192,18 +165,17 @@ button:hover {
 
     <textarea id="input" placeholder="حط الأوردارات هنا (كل واحد في سطر)"></textarea>
 
-    <div class="options">
-        <select id="separator">
-            <option value=",">Comma (,)</option>
-            <option value="|">Pipe (|)</option>
-            <option value=";">Semicolon (;)</option>
-        </select>
-    </div>
+    <select id="separator">
+        <option value=",">Comma (,)</option>
+        <option value="|">Pipe (|)</option>
+        <option value=";">Semicolon (;)</option>
+    </select>
 
     <button onclick="convert()">⚡ Convert</button>
-    <button class="secondary" onclick="clearAll()">🧹 Clear</button>
 
     <div class="result" id="result"></div>
+
+    <button class="copy-btn" onclick="copy()">📋 Copy</button>
 
     <!-- CTA -->
     <div id="ctaBox" class="cta" style="display:none; text-align:center; margin-top:15px;">
@@ -229,13 +201,17 @@ window.onload = () => {
     }, 1500);
 };
 
+// Convert + Remove duplicates
 function convert() {
     let val = document.getElementById("input").value
         .replace(/[^0-9]+/g," ")
         .trim()
         .split(/\s+/);
 
-    let output = val.join(document.getElementById("separator").value);
+    let unique = [...new Set(val)];
+
+    let output = unique.join(document.getElementById("separator").value);
+
     result.innerText = output;
 
     if(output){
@@ -246,9 +222,11 @@ function convert() {
     document.getElementById("ctaBox").style.display = "block";
 }
 
-function clearAll() {
-    input.value = "";
-    result.innerText = "";
+// Copy
+function copy() {
+    let text = result.innerText;
+    navigator.clipboard.writeText(text);
+    showToast();
 }
 
 function showToast(){
@@ -256,7 +234,7 @@ function showToast(){
     setTimeout(()=> toast.style.display="none",1500);
 }
 
-/* 🛡️ حماية */
+/* حماية */
 document.addEventListener("contextmenu", e => e.preventDefault());
 
 document.onkeydown = function(e) {
