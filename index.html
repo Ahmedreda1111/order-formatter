@@ -26,7 +26,6 @@ body {
     min-height: 100vh;
 }
 
-/* Loader */
 #loader {
     position: fixed;
     width: 100%;
@@ -49,7 +48,6 @@ body {
     100% { transform: scale(1); opacity: 0.6; }
 }
 
-/* Container */
 .container {
     width: 100%;
     max-width: 600px;
@@ -59,7 +57,6 @@ body {
     box-shadow: 0 0 50px rgba(37,99,235,0.3);
 }
 
-/* Logo */
 .logo img {
     width: 140px;
     display: block;
@@ -111,25 +108,19 @@ button {
     background: #22c55e;
 }
 
-/* CTA */
 .cta button {
     background: linear-gradient(90deg,#f59e0b,#facc15);
 }
 
-/* Result */
 .result {
     margin-top: 15px;
     background: #020617;
     padding: 12px;
     border-radius: 10px;
     min-height: 40px;
-
-    /* 🔥 حل مشكلة السطر */
     word-break: break-all;
-    overflow-wrap: break-word;
 }
 
-/* Toast */
 .toast {
     position: fixed;
     bottom: 20px;
@@ -140,7 +131,6 @@ button {
     display: none;
 }
 
-/* Footer */
 .footer {
     text-align: center;
     margin-top: 15px;
@@ -152,7 +142,6 @@ button {
 
 <body>
 
-<!-- Loader -->
 <div id="loader">
     <img src="logo.ico">
 </div>
@@ -167,7 +156,7 @@ button {
 
     <h1>Bulk Order Formatter</h1>
 
-    <textarea id="input" placeholder="حط الأوردارات هنا (أي فاصل: سطر / مسافة / ,)"></textarea>
+    <textarea id="input" placeholder="حط الأوردارات هنا (أرقام بس)"></textarea>
 
     <select id="separator">
         <option value=",">Comma (,)</option>
@@ -181,7 +170,6 @@ button {
 
     <button class="copy-btn" onclick="copy()">📋 Copy</button>
 
-    <!-- CTA -->
     <div id="ctaBox" class="cta" style="display:none; text-align:center; margin-top:15px;">
         <a href="https://smmxhero.com" target="_blank">
             <button>🚀 اطلب من smmxhero</button>
@@ -189,7 +177,7 @@ button {
     </div>
 
     <div class="footer">
-        © 2026 smmxhero.com
+        © 2026 smmxhero.com - All Rights Reserved
     </div>
 
 </div>
@@ -197,7 +185,6 @@ button {
 <div class="toast" id="toast">Copied ✅</div>
 
 <script>
-// Loader
 window.onload = () => {
     setTimeout(() => {
         loader.style.display = "none";
@@ -205,12 +192,13 @@ window.onload = () => {
     }, 1500);
 };
 
-// 🔥 Convert + Remove duplicates (مظبوط 100%)
+// 🔥 أرقام فقط + إزالة الحروف + إزالة التكرار
 function convert() {
     let input = document.getElementById("input").value;
 
     let val = input
-        .split(/[\s,]+/) // يفصل بأي فاصل
+        .replace(/[^0-9\s,]+/g, " ") // حذف أي حروف
+        .split(/[\s,]+/)
         .map(x => x.trim())
         .filter(x => x !== "");
 
