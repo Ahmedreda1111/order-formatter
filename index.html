@@ -4,304 +4,171 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SMMXHERO.COM | Bulk Order Formatter</title>
+<title>SMMXHERO | Smart OCR Tool</title>
 
 <link rel="icon" href="logo.ico">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Cairo', sans-serif;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+body { background: #1a1b1e; color: #e5e7eb; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
-body {
-    background: #1a1b1e; 
-    color: #e5e7eb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+#loader { position: fixed; width: 100%; height: 100%; background: #1a1b1e; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+#loader img { width: 80px; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.6; } }
 
-#loader {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: #1a1b1e;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.3s ease;
-}
+.container { width: 100%; max-width: 600px; background: #25262b; padding: 30px; border-radius: 8px; border: 1px solid #373a40; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+.brand { text-align: center; color: #e5e7eb; margin-bottom: 20px; font-size: 20px; font-weight: 700; }
 
-#loader img {
-    width: 80px;
-    animation: pulse 1.5s infinite;
-}
+.ocr-section { background: rgba(13, 110, 253, 0.1); border: 2px dashed #0d6efd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+.ocr-section:hover { background: rgba(13, 110, 253, 0.2); }
+.ocr-section p { font-size: 13px; color: #3b82f6; margin-top: 5px; }
 
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.6; }
-}
+label { display: block; margin-bottom: 5px; font-size: 14px; color: #909296; }
+.form-control { width: 100%; margin-bottom: 15px; padding: 12px 15px; border-radius: 6px; border: 1px solid #373a40; background: #141517; color: #c1c2c5; font-size: 14px; outline: none; }
 
-.container {
-    width: 100%;
-    max-width: 600px;
-    background: #25262b;
-    padding: 30px;
-    border-radius: 8px;
-    border: 1px solid #373a40;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-}
+#status { font-size: 12px; color: #facc15; margin-bottom: 10px; display: none; text-align: center;}
+.stats-text { text-align: center; color: #12b886; font-size: 14px; font-weight: 600; margin: 10px 0; }
 
-.brand {
-    text-align: center;
-    color: #e5e7eb;
-    margin-bottom: 25px;
-    font-size: 20px;
-    font-weight: 700;
-}
+.btn-primary { width: 100%; padding: 12px; border: none; background: #0d6efd; color: white; font-weight: 600; border-radius: 6px; cursor: pointer; margin-bottom: 10px; }
+.btn-primary:hover { background: #0b5ed7; }
 
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #909296;
-}
+.action-buttons { display: flex; gap: 10px; }
+.btn-success { background: #198754; flex: 1; border: none; padding: 12px; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.btn-danger { background: #dc3545; flex: 1; border: none; padding: 12px; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
-.form-control {
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 12px 15px;
-    border-radius: 6px;
-    border: 1px solid #373a40;
-    background: #141517;
-    color: #c1c2c5;
-    font-size: 14px;
-    transition: 0.2s;
-    outline: none;
-    resize: vertical;
-}
+.filter-settings { background: #1c1d21; padding: 10px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #373a40; }
+.filter-settings span { font-size: 12px; color: #909296; display: block; margin-bottom: 5px; }
 
-.form-control:focus {
-    border-color: #0d6efd;
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 6px;
-    border: none;
-    background: #0d6efd;
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background: #0b5ed7;
-}
-
-.stats-text {
-    text-align: center;
-    color: #12b886;
-    font-size: 14px;
-    font-weight: 600;
-    margin: 15px 0;
-    min-height: 20px;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.btn-success { background: #198754; }
-.btn-success:hover { background: #157347; }
-
-.btn-danger { background: #dc3545; }
-.btn-danger:hover { background: #bb2d3b; }
-
-.redirect-box {
-    display: none;
-    text-align: center;
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(25, 135, 84, 0.1);
-    border: 1px solid #198754;
-    border-radius: 8px;
-    animation: fadeInDown 0.4s ease;
-}
-
-.redirect-box p {
-    color: #e5e7eb;
-    margin-bottom: 12px;
-    font-size: 15px;
-}
-
-.redirect-box button {
-    background: #198754;
-    width: auto;
-    padding: 10px 30px;
-}
-
-.redirect-box button:hover {
-    background: #157347;
-}
-
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #198754;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
-    display: none;
-    animation: fadeIn 0.3s;
-    font-size: 14px;
-}
-
-@keyframes fadeIn {
-    from { bottom: 0; opacity: 0; }
-    to { bottom: 20px; opacity: 1; }
-}
+.toast { position: fixed; bottom: 20px; right: 20px; background: #198754; color: white; padding: 10px 20px; border-radius: 6px; display: none; font-size: 14px; }
 </style>
 </head>
 
 <body>
 
-<div id="loader">
-    <img src="logo.ico" alt="Loading">
-</div>
+<div id="loader"><img src="logo.ico" alt="Loading"></div>
 
 <div class="container" id="main" style="display:none;">
+    <div class="brand">SMMXHERO | مُستخرج الأرقام الفلتر الذكي 📷</div>
 
-    <div class="brand">SMMXHERO | مُنسّق الطلبات الجماعية (Bulk)</div>
+    <div class="ocr-section" onclick="document.getElementById('imageInput').click()">
+        <strong>📷 ارفع سكرين شوت الطلبات (حتى لو جدول)</strong>
+        <p>سيتم فلترة الأرقام والكميات تلقائياً</p>
+        <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="processImage(this)">
+    </div>
 
-    <label>أرقام الطلبات (انسخها هنا بأي شكل)</label>
-    <textarea id="input" class="form-control" rows="5" placeholder="مثال: 12345, 12346 أو قائمة أرقام..."></textarea>
+    <div id="status">⏳ جاري تحليل الصورة...</div>
 
-    <label>اختر طريقة الفصل بين الأرقام</label>
+    <div class="filter-settings">
+        <span>⚙️ إعدادات الفلترة الذكية:</span>
+        <label style="display: inline-flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer;">
+            <input type="checkbox" id="idLengthFilter" checked style="width:15px; height:15px;"> استخراج الأرقام الطويلة فقط (Order ID)
+        </label>
+    </div>
+
+    <label>النص المستخرج من الصورة</label>
+    <textarea id="input" class="form-control" rows="4" placeholder="سيظهر النص هنا بعد قراءة الصورة..."></textarea>
+
+    <label>الفاصل المطلوب</label>
     <select id="separator" class="form-control">
-        <option value=",">فاصلة عادية ( , )</option>
-        <option value="&#10;">سطر جديد (رقم تحت رقم)</option>
-        <option value="|">خط عمودي ( | )</option>
-        <option value=";">فاصلة منقوطة ( ; )</option>
+        <option value=",">فاصلة ( , )</option>
+        <option value="&#10;">سطر جديد</option>
     </select>
 
-    <button onclick="convert()">⚡ فلترة واستخراج الأرقام</button>
+    <button class="btn-primary" onclick="convert()">⚡ تنظيف واستخراج أرقام الطلبات فقط</button>
 
     <div id="stats" class="stats-text"></div>
 
-    <label>النتيجة النهائية (جاهزة للنسخ)</label>
-    <textarea id="result" class="form-control" rows="5" readonly placeholder="الأرقام ستظهر هنا بعد الفلترة..."></textarea>
+    <label>النتيجة النهائية (أرقام الطلبات المفلترة)</label>
+    <textarea id="result" class="form-control" rows="5" readonly placeholder="الأرقام الصافية ستظهر هنا..."></textarea>
 
     <div class="action-buttons">
         <button class="btn-success" onclick="copy()">📋 نسخ النتيجة</button>
-        <button class="btn-danger" onclick="clearAll()">🗑️ مسح الكل</button>
+        <button class="btn-danger" onclick="clearAll()">🗑️ مسح</button>
     </div>
-
-    <div id="redirectBox" class="redirect-box">
-        <p>✅ <strong>تم نسخ الأرقام بنجاح!</strong><br>جاهزة للّصق في مربع التعويض أو الإلغاء.</p>
-        <a href="https://smmxhero.com" target="_blank" style="text-decoration: none;">
-            <button>🚀 الانتقال للموقع</button>
-        </a>
-    </div>
-
 </div>
 
-<div class="toast" id="toast">تم النسخ بنجاح ✅</div>
+<div class="toast" id="toast">تم النسخ ✅</div>
 
 <script>
-window.addEventListener("load", () => {
-    const loader = document.getElementById("loader");
-    const main = document.getElementById("main");
-    
-    loader.style.opacity = "0";
+window.onload = () => {
     setTimeout(() => {
-        loader.style.display = "none";
-        main.style.display = "block";
-    }, 300); 
-});
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("main").style.display = "block";
+    }, 500);
+};
+
+async function processImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const status = document.getElementById("status");
+    const inputArea = document.getElementById("input");
+    
+    status.style.display = "block";
+    status.innerText = "⏳ جاري تحليل الصورة واستخراج البيانات...";
+
+    try {
+        const result = await Tesseract.recognize(file, 'eng');
+        inputArea.value = result.data.text; // نضع النص كامل كما هو للمراجعة
+        
+        status.innerText = "✅ تم قراءة الصورة! اضغط (تنظيف) لاستخراج أرقام الطلبات.";
+        setTimeout(() => status.style.display = "none", 4000);
+    } catch (e) {
+        alert("فشل في القراءة. يرجى محاولة رفع صورة أوضح.");
+        status.style.display = "none";
+    }
+}
 
 function convert() {
     const input = document.getElementById("input").value;
     const separator = document.getElementById("separator").value;
-    const resultBox = document.getElementById("result");
-    const statsBox = document.getElementById("stats");
-    const redirectBox = document.getElementById("redirectBox");
+    const useLengthFilter = document.getElementById("idLengthFilter").checked;
+    
+    // استخراج كل الأرقام من النص
+    let numbers = input.match(/\d+/g);
 
-    redirectBox.style.display = "none";
-
-    if (!input.trim()) {
-        alert("يرجى إدخال أرقام الطلبات أولاً.");
+    if (!numbers) {
+        alert("لم يتم العثور على أرقام في النص.");
         return;
     }
 
-    // استخراج الأرقام فقط بذكاء
-    const numbers = input.match(/\d+/g);
+    let filteredNumbers = [];
 
-    if (!numbers || numbers.length === 0) {
-        alert("لم يتم العثور على أي أرقام صحيحة في النص.");
-        resultBox.value = "";
-        statsBox.innerText = "";
+    if (useLengthFilter) {
+        // فلتر الأرقام الطويلة: نفترض أن Order ID لا يقل عن 5 أرقام
+        // والكميات والأسعار غالباً أقل من ذلك في أغلب الطلبات
+        filteredNumbers = numbers.filter(num => num.length >= 5);
+    } else {
+        filteredNumbers = numbers;
+    }
+
+    if (filteredNumbers.length === 0) {
+        alert("لم يتم العثور على أرقام تطابق شروط الفلترة (طول 5 خانات فأكثر).");
         return;
     }
 
-    // إزالة التكرار
-    const uniqueNumbers = [...new Set(numbers)];
-    const duplicatesRemoved = numbers.length - uniqueNumbers.length;
-
-    // دمج الأرقام بالفاصل المختار
-    const output = uniqueNumbers.join(separator);
-
-    resultBox.value = output;
-    statsBox.innerText = `✅ تم استخراج ${uniqueNumbers.length} رقم طلب (تم حذف ${duplicatesRemoved} مكرر).`;
+    const uniqueNumbers = [...new Set(filteredNumbers)];
+    document.getElementById("result").value = uniqueNumbers.join(separator);
+    document.getElementById("stats").innerText = `✅ تم تصفية ${uniqueNumbers.length} رقم طلب (تم تجاهل الأسعار والكميات).`;
 }
 
 async function copy() {
-    const textToCopy = document.getElementById("result").value;
-    const toast = document.getElementById("toast");
-    const redirectBox = document.getElementById("redirectBox");
-    
-    if (!textToCopy) {
-        alert("لا يوجد شيء لنسخه. قم بتوليد الأرقام أولاً.");
-        return;
-    }
-    
-    try {
-        await navigator.clipboard.writeText(textToCopy);
-        
-        toast.style.display = "block";
-        setTimeout(() => toast.style.display = "none", 2500);
-        
-        redirectBox.style.display = "block";
-        
-    } catch (err) {
-        alert("حدث خطأ أثناء النسخ. يرجى التحديد والنسخ يدوياً.");
-    }
+    const res = document.getElementById("result").value;
+    if (!res) return;
+    await navigator.clipboard.writeText(res);
+    const t = document.getElementById("toast");
+    t.style.display = "block";
+    setTimeout(() => t.style.display = "none", 2000);
 }
 
 function clearAll() {
     document.getElementById("input").value = "";
     document.getElementById("result").value = "";
     document.getElementById("stats").innerText = "";
-    document.getElementById("redirectBox").style.display = "none";
+    document.getElementById("imageInput").value = "";
 }
 </script>
 
