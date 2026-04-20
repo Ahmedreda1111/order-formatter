@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SMMXHERO.COM | Bulk Tool</title>
+<title>SMMXHERO.COM | Bulk Order Formatter</title>
 
 <link rel="icon" href="logo.ico">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 * {
@@ -18,124 +18,167 @@
 }
 
 body {
-    background: linear-gradient(135deg, #0f172a, #020617);
-    color: white;
+    background: #1a1b1e; 
+    color: #e5e7eb;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 20px;
 }
 
 #loader {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: #020617;
+    background: #1a1b1e;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    transition: opacity 0.3s ease;
 }
 
 #loader img {
-    width: 100px;
+    width: 80px;
     animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
     0% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.2); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 1; }
     100% { transform: scale(1); opacity: 0.6; }
 }
 
 .container {
     width: 100%;
     max-width: 600px;
-    background: #0f172a;
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 0 50px rgba(37,99,235,0.3);
-}
-
-.logo img {
-    width: 140px;
-    display: block;
-    margin: auto;
-    filter: drop-shadow(0 0 30px #3b82f6);
+    background: #25262b;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #373a40;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
 .brand {
     text-align: center;
-    color: #3b82f6;
-    margin-bottom: 10px;
-    font-weight: bold;
+    color: #e5e7eb;
+    margin-bottom: 25px;
+    font-size: 20px;
+    font-weight: 700;
 }
 
-h1 {
-    text-align: center;
-    margin: 10px 0 20px;
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #909296;
 }
 
-textarea {
+.form-control {
     width: 100%;
-    height: 150px;
-    border-radius: 10px;
-    border: none;
-    padding: 12px;
-    background: #020617;
-    color: white;
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: 1px solid #373a40;
+    background: #141517;
+    color: #c1c2c5;
+    font-size: 14px;
+    transition: 0.2s;
+    outline: none;
+    resize: vertical;
 }
 
-select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    margin-top: 10px;
+.form-control:focus {
+    border-color: #0d6efd;
 }
 
 button {
     width: 100%;
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 6px;
     border: none;
-    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    background: #0d6efd;
     color: white;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 10px;
+    transition: background 0.2s;
 }
 
-.copy-btn {
-    background: #22c55e;
+button:hover {
+    background: #0b5ed7;
 }
 
-.cta button {
-    background: linear-gradient(90deg,#f59e0b,#facc15);
+.stats-text {
+    text-align: center;
+    color: #12b886;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 15px 0;
+    min-height: 20px;
 }
 
-.result {
+.action-buttons {
+    display: flex;
+    gap: 10px;
     margin-top: 15px;
-    background: #020617;
-    padding: 12px;
-    border-radius: 10px;
-    min-height: 40px;
-    word-break: break-all;
+}
+
+.btn-success { background: #198754; }
+.btn-success:hover { background: #157347; }
+
+.btn-danger { background: #dc3545; }
+.btn-danger:hover { background: #bb2d3b; }
+
+.redirect-box {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(25, 135, 84, 0.1);
+    border: 1px solid #198754;
+    border-radius: 8px;
+    animation: fadeInDown 0.4s ease;
+}
+
+.redirect-box p {
+    color: #e5e7eb;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.redirect-box button {
+    background: #198754;
+    width: auto;
+    padding: 10px 30px;
+}
+
+.redirect-box button:hover {
+    background: #157347;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .toast {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: #22c55e;
+    background: #198754;
+    color: white;
     padding: 10px 20px;
-    border-radius: 10px;
+    border-radius: 6px;
     display: none;
+    animation: fadeIn 0.3s;
+    font-size: 14px;
 }
 
-.footer {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
-    opacity: 0.7;
+@keyframes fadeIn {
+    from { bottom: 0; opacity: 0; }
+    to { bottom: 20px; opacity: 1; }
 }
 </style>
 </head>
@@ -143,107 +186,123 @@ button {
 <body>
 
 <div id="loader">
-    <img src="logo.ico">
+    <img src="logo.ico" alt="Loading">
 </div>
 
 <div class="container" id="main" style="display:none;">
 
-    <div class="logo">
-        <img src="logo.ico">
-    </div>
+    <div class="brand">SMMXHERO | مُنسّق الطلبات الجماعية (Bulk)</div>
 
-    <div class="brand">smmxhero.com</div>
+    <label>أرقام الطلبات (انسخها هنا بأي شكل)</label>
+    <textarea id="input" class="form-control" rows="5" placeholder="مثال: 12345, 12346 أو قائمة أرقام..."></textarea>
 
-    <h1>Bulk Order Formatter</h1>
-
-    <textarea id="input" placeholder="حط الأوردارات هنا (أرقام بس)"></textarea>
-
-    <select id="separator">
-        <option value=",">Comma (,)</option>
-        <option value="|">Pipe (|)</option>
-        <option value=";">Semicolon (;)</option>
+    <label>اختر طريقة الفصل بين الأرقام</label>
+    <select id="separator" class="form-control">
+        <option value=",">فاصلة عادية ( , )</option>
+        <option value="&#10;">سطر جديد (رقم تحت رقم)</option>
+        <option value="|">خط عمودي ( | )</option>
+        <option value=";">فاصلة منقوطة ( ; )</option>
     </select>
 
-    <button onclick="convert()">⚡ Convert</button>
+    <button onclick="convert()">⚡ فلترة واستخراج الأرقام</button>
 
-    <div class="result" id="result"></div>
+    <div id="stats" class="stats-text"></div>
 
-    <button class="copy-btn" onclick="copy()">📋 Copy</button>
+    <label>النتيجة النهائية (جاهزة للنسخ)</label>
+    <textarea id="result" class="form-control" rows="5" readonly placeholder="الأرقام ستظهر هنا بعد الفلترة..."></textarea>
 
-    <div id="ctaBox" class="cta" style="display:none; text-align:center; margin-top:15px;">
-        <a href="https://smmxhero.com" target="_blank">
-            <button>🚀 اطلب من smmxhero</button>
-        </a>
+    <div class="action-buttons">
+        <button class="btn-success" onclick="copy()">📋 نسخ النتيجة</button>
+        <button class="btn-danger" onclick="clearAll()">🗑️ مسح الكل</button>
     </div>
 
-    <div class="footer">
-        © 2026 smmxhero.com - All Rights Reserved
+    <div id="redirectBox" class="redirect-box">
+        <p>✅ <strong>تم نسخ الأرقام بنجاح!</strong><br>جاهزة للّصق في مربع التعويض أو الإلغاء.</p>
+        <a href="https://smmxhero.com" target="_blank" style="text-decoration: none;">
+            <button>🚀 الانتقال للموقع</button>
+        </a>
     </div>
 
 </div>
 
-<div class="toast" id="toast">Copied ✅</div>
+<div class="toast" id="toast">تم النسخ بنجاح ✅</div>
 
 <script>
-window.onload = () => {
+window.addEventListener("load", () => {
+    const loader = document.getElementById("loader");
+    const main = document.getElementById("main");
+    
+    loader.style.opacity = "0";
     setTimeout(() => {
         loader.style.display = "none";
         main.style.display = "block";
-    }, 1500);
-};
+    }, 300); 
+});
 
-// 🔥 أرقام فقط + إزالة الحروف + إزالة التكرار
 function convert() {
-    let input = document.getElementById("input").value;
+    const input = document.getElementById("input").value;
+    const separator = document.getElementById("separator").value;
+    const resultBox = document.getElementById("result");
+    const statsBox = document.getElementById("stats");
+    const redirectBox = document.getElementById("redirectBox");
 
-    let val = input
-        .replace(/[^0-9\s,]+/g, " ") // حذف أي حروف
-        .split(/[\s,]+/)
-        .map(x => x.trim())
-        .filter(x => x !== "");
+    redirectBox.style.display = "none";
 
-    let unique = [...new Set(val)];
-
-    let output = unique.join(document.getElementById("separator").value);
-
-    document.getElementById("result").innerText = output;
-
-    if(output){
-        navigator.clipboard.writeText(output);
-        showToast();
+    if (!input.trim()) {
+        alert("يرجى إدخال أرقام الطلبات أولاً.");
+        return;
     }
 
-    document.getElementById("ctaBox").style.display = "block";
-}
+    // استخراج الأرقام فقط بذكاء
+    const numbers = input.match(/\d+/g);
 
-// Copy
-function copy() {
-    navigator.clipboard.writeText(document.getElementById("result").innerText);
-    showToast();
-}
-
-function showToast(){
-    toast.style.display = "block";
-    setTimeout(()=> toast.style.display="none",1500);
-}
-
-/* حماية */
-document.addEventListener("contextmenu", e => e.preventDefault());
-
-document.onkeydown = function(e) {
-    if (e.keyCode == 123) return false;
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 73) return false;
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 74) return false;
-    if (e.ctrlKey && e.keyCode == 85) return false;
-};
-
-setInterval(function() {
-    let width = window.outerWidth - window.innerWidth;
-    let height = window.outerHeight - window.innerHeight;
-    if (width > 200 || height > 200) {
-        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%;'>🚫 ممنوع فتح أدوات المطور</h1>";
+    if (!numbers || numbers.length === 0) {
+        alert("لم يتم العثور على أي أرقام صحيحة في النص.");
+        resultBox.value = "";
+        statsBox.innerText = "";
+        return;
     }
-}, 1000);
+
+    // إزالة التكرار
+    const uniqueNumbers = [...new Set(numbers)];
+    const duplicatesRemoved = numbers.length - uniqueNumbers.length;
+
+    // دمج الأرقام بالفاصل المختار
+    const output = uniqueNumbers.join(separator);
+
+    resultBox.value = output;
+    statsBox.innerText = `✅ تم استخراج ${uniqueNumbers.length} رقم طلب (تم حذف ${duplicatesRemoved} مكرر).`;
+}
+
+async function copy() {
+    const textToCopy = document.getElementById("result").value;
+    const toast = document.getElementById("toast");
+    const redirectBox = document.getElementById("redirectBox");
+    
+    if (!textToCopy) {
+        alert("لا يوجد شيء لنسخه. قم بتوليد الأرقام أولاً.");
+        return;
+    }
+    
+    try {
+        await navigator.clipboard.writeText(textToCopy);
+        
+        toast.style.display = "block";
+        setTimeout(() => toast.style.display = "none", 2500);
+        
+        redirectBox.style.display = "block";
+        
+    } catch (err) {
+        alert("حدث خطأ أثناء النسخ. يرجى التحديد والنسخ يدوياً.");
+    }
+}
+
+function clearAll() {
+    document.getElementById("input").value = "";
+    document.getElementById("result").value = "";
+    document.getElementById("stats").innerText = "";
+    document.getElementById("redirectBox").style.display = "none";
+}
 </script>
 
 </body>
