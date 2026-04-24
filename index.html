@@ -85,16 +85,18 @@
 
     .btn-main { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
 
+    .mode-selector { display: flex; background: var(--input-bg); padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); gap: 5px; }
+    .m-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-dim); cursor: pointer; border-radius: 10px; font-size: 13px; font-weight: 700; }
+    .m-btn.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+
+    .drop-box { background: rgba(13, 110, 253, 0.05); border: 2px dashed var(--border); padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 20px; cursor: pointer; }
+
     .action-btns { display: flex; gap: 10px; margin-top: 15px; }
     .btn-success { background: var(--success); flex: 1.5; padding: 14px; border-radius: 12px; color: white; font-weight: 700; border: none; cursor: pointer; }
     .btn-danger { background: var(--danger); flex: 1; padding: 14px; border-radius: 12px; color: white; font-weight: 700; border: none; cursor: pointer; }
 
-    /* زر واتساب العائم */
     .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s; text-decoration: none; font-size: 30px; }
-    .whatsapp-float:hover { transform: scale(1.1); background: #128c7e; }
-    .whatsapp-float span { position: absolute; right: 70px; background: #25d366; padding: 5px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; white-space: nowrap; pointer-events: none; opacity: 0; transition: 0.3s; }
-    .whatsapp-float:hover span { opacity: 1; right: 80px; }
-
+    
     .stats-box { background: rgba(18, 184, 134, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: center; display: none; }
     
     #loader { position: fixed; inset: 0; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 9999; }
@@ -164,6 +166,18 @@
     </div>
 
     <div id="filterTab" class="tab-content">
+        <div class="mode-selector">
+            <button class="m-btn active" id="btnManual" onclick="switchFilterMode('manual')">⌨️ يدوي</button>
+            <button class="m-btn" id="btnImage" onclick="switchFilterMode('image')">📷 من صورة</button>
+        </div>
+
+        <div id="filterImageSection" style="display: none;">
+            <div class="drop-box" onclick="document.getElementById('filterImgInput').click()">
+                <strong>📸 اضغط لاختيار صورة (OCR)</strong>
+                <input type="file" id="filterImgInput" accept="image/*" style="display:none" onchange="handleOcr(this.files[0])">
+            </div>
+        </div>
+
         <label>النص المراد تنظيفه</label>
         <textarea id="filterInput" class="form-control" rows="6" placeholder="الصق النص هنا..."></textarea>
         <div style="display: flex; gap: 12px;">
@@ -189,10 +203,7 @@
     </div>
 </div>
 
-<a href="https://wa.me/201159017393" class="whatsapp-float" target="_blank">
-    <span>تواصل مع الدعم الفني</span>
-    📞
-</a>
+<a href="https://wa.me/201159017393" class="whatsapp-float" target="_blank">📞</a>
 
 <footer style="padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px;">
     <p>© 2026 جميع الحقوق محفوظة لـ <a href="https://smmxhero.com" style="color: var(--primary); text-decoration: none; font-weight: 700;">SMMXHERO.COM</a></p>
@@ -221,6 +232,23 @@
         event.currentTarget.classList.add('active');
     }
 
+    function switchFilterMode(mode) {
+        const isImg = mode === 'image';
+        document.getElementById("filterImageSection").style.display = isImg ? "block" : "none";
+        document.getElementById("btnManual").classList.toggle("active", !isImg);
+        document.getElementById("btnImage").classList.toggle("active", isImg);
+    }
+
+    async function handleOcr(file) {
+        if(!file) return;
+        showToast("⏳ جاري تحليل الصورة...");
+        try {
+            const r = await Tesseract.recognize(file, 'eng');
+            document.getElementById("filterInput").value = r.data.text;
+            showToast("✅ تم الاستخراج");
+        } catch(e) { showToast("❌ فشل التحليل"); }
+    }
+
     function toggleMassQty() {
         const isRnd = document.getElementById("massRandomCheck").checked;
         document.getElementById("massFixedQty").style.opacity = isRnd ? "0.3" : "1";
@@ -245,7 +273,7 @@
         });
         document.getElementById("massResult").value = res.trim();
         document.getElementById("massStatsBox").style.display = "block";
-        document.getElementById("massStats").innerText = `✨ تم تنسيق ${c} طلب بنجاح!`;
+        document.getElementById("massStats").innerText = `✨ تم تنسيق ${c} طلب!`;
     }
 
     function runFilter() {
