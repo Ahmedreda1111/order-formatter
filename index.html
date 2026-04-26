@@ -51,24 +51,26 @@
         .tab-content.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .form-control { width: 100%; margin-bottom: 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text-main); font-size: 14px; outline: none; }
+        .form-control { width: 100%; margin-bottom: 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.3s; }
+        .form-control:focus { border-color: var(--primary); }
         label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--text-dim); }
 
         .btn-main { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
+        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
 
         .mode-selector { display: flex; background: var(--input-bg); padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); gap: 5px; }
-        .m-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-dim); cursor: pointer; border-radius: 10px; font-size: 13px; font-weight: 700; }
+        .m-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-dim); cursor: pointer; border-radius: 10px; font-size: 13px; font-weight: 700; transition: 0.3s; }
         .m-btn.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid var(--border); }
 
         .drop-box { background: rgba(13, 110, 253, 0.05); border: 2px dashed var(--border); padding: 40px; border-radius: 15px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: 0.3s; }
         .drop-box.dragover { background: rgba(13, 110, 253, 0.15); border-color: var(--primary); }
 
         .action-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-success { background: var(--success); flex: 1.5; padding: 14px; border-radius: 12px; color: white; font-weight: 700; border: none; cursor: pointer; }
-        .btn-danger { background: var(--danger); flex: 1; padding: 14px; border-radius: 12px; color: white; font-weight: 700; border: none; cursor: pointer; }
+        .btn-success { background: var(--success); flex: 1.5; padding: 14px; border-radius: 12px; color: white; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-danger { background: var(--danger); flex: 1; padding: 14px; border-radius: 12px; color: white; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
 
         .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s; text-decoration: none; font-size: 30px; }
-        .whatsapp-float span { position: absolute; right: 70px; background: #25d366; padding: 5px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; transition: 0.3s; }
+        .whatsapp-float span { position: absolute; right: 70px; background: #25d366; padding: 5px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.3s; }
         .whatsapp-float:hover span { opacity: 1; }
 
         .stats-box { background: rgba(18, 184, 134, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: center; display: none; }
@@ -77,7 +79,7 @@
         #loader img { width: 60px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { opacity: 0.5; transform: scale(1.1); } }
 
-        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #222; border: 1px solid var(--primary); color: white; padding: 12px 30px; border-radius: 50px; display: none; z-index: 10000; font-size: 14px; font-weight: 700; text-align: center; min-width: 200px; }
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #222; border: 1px solid var(--primary); color: white; padding: 12px 30px; border-radius: 50px; display: none; z-index: 10000; font-size: 14px; font-weight: 700; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -103,7 +105,7 @@
             <div style="flex: 1.2;"><label>رقم الخدمة</label><input type="text" id="massService" class="form-control" placeholder="101" oninput="saveS()"></div>
             <div style="flex: 1;" id="massFixedQty"><label>الكمية</label><input type="number" id="massQty" class="form-control" placeholder="1000"></div>
         </div>
-        <label style="cursor: pointer;"><input type="checkbox" id="massRandomCheck" onchange="toggleMassQty()"> توزيع عشوائي (آمن)</label>
+        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="massRandomCheck" onchange="toggleMassQty()"> توزيع عشوائي (آمن)</label>
         <div id="massRandomGroup" style="display: none; gap: 12px; margin: 15px 0;">
             <div style="flex: 1;"><label>أقل كمية</label><input type="number" id="massMin" class="form-control" placeholder="50"></div>
             <div style="flex: 1;"><label>أكبر كمية</label><input type="number" id="massMax" class="form-control" placeholder="200"></div>
@@ -123,43 +125,38 @@
             <button class="m-btn active" id="btnManual" onclick="switchFilterMode('manual')">⌨️ يدوي</button>
             <button class="m-btn" id="btnImage" onclick="switchFilterMode('image')">📷 صورة / لصق</button>
         </div>
-        
         <div id="filterImageSection" style="display: none;">
             <div class="drop-box" id="dropZone" onclick="document.getElementById('filterImgInput').click()">
                 <strong>📸 اضغط أو اسحب الصورة هنا</strong>
-                <p style="font-size: 12px; color: var(--text-dim); margin-top: 10px;">أو استخدم <b>Ctrl+V</b> للصق الصورة مباشرة</p>
+                <p style="font-size: 12px; color: var(--text-dim); margin-top: 10px;">أو استخدم <b>Ctrl+V</b> للصق الصورة من الحافظة</p>
                 <input type="file" id="filterImgInput" accept="image/*" style="display:none" onchange="handleOcr(this.files[0])">
             </div>
         </div>
-
         <textarea id="filterInput" class="form-control" rows="6" placeholder="الصق النص هنا..."></textarea>
-        
         <div style="display: flex; gap: 12px;">
             <div style="flex: 1;"><label>التصفية</label>
                 <select id="filterType" class="form-control">
                     <option value="id">أرقام طلبات (5+ أرقام)</option>
-                    <option value="all">كل الأرقام المستخرجة</option>
+                    <option value="all">كل الأرقام</option>
                 </select>
             </div>
             <div style="flex: 1;"><label>الفاصل</label><input type="text" class="form-control" value="فاصلة ( , )" readonly style="text-align: center; opacity: 0.7;"></div>
         </div>
-
         <button class="btn-main" onclick="runFilter()">⚡ استخراج بالفاصلة</button>
         <div id="filterStatsBox" class="stats-box"><p id="filterStats"></p></div>
         <textarea id="filterResult" class="form-control" rows="5" readonly></textarea>
         <div class="action-btns">
-            <button class="btn-success" onclick="copyValue('filterResult')">📋 نسخ النتائج</button>
+            <button class="btn-success" onclick="copyValue('filterResult')">📋 نسخ</button>
             <button class="btn-danger" onclick="clearFilter()">🗑️ مسح</button>
         </div>
     </div>
 </div>
 
 <a href="https://wa.me/201159017393" class="whatsapp-float" target="_blank"><span>الدعم الفني</span>📞</a>
-
 <div class="toast" id="toast"></div>
 
 <script>
-    // --- التحكم بالسمة (Theme) ---
+    // --- الوظائف العامة ---
     function toggleTheme() {
         document.body.classList.toggle("light-mode");
         const isL = document.body.classList.contains("light-mode");
@@ -176,12 +173,11 @@
         }, 500);
     };
 
-    // --- التنقل بين التبويبات ---
     function openTab(id) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
+        if(event) event.currentTarget.classList.add('active');
     }
 
     function switchFilterMode(mode) {
@@ -191,54 +187,53 @@
         document.getElementById("btnImage").classList.toggle("active", isImg);
     }
 
-    // --- ميزات السحب والإفلات واللصق (إصلاح مشكلة لصق الصور) ---
-    const dropZone = document.getElementById('dropZone');
+    // --- نظام التعرف على الصور (OCR) المطور ---
     
+    // مراقبة اللصق Ctrl+V
+    document.addEventListener('paste', function (e) {
+        if (!document.getElementById('btnImage').classList.contains('active')) return;
+        
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                const blob = items[i].getAsFile();
+                handleOcr(blob);
+            }
+        }
+    });
+
+    async function handleOcr(file) {
+        if(!file) return;
+        showToast("⏳ جاري تحليل الصورة... يرجى الانتظار");
+        
+        try {
+            // استخدام النسخة الحديثة من Tesseract
+            const result = await Tesseract.recognize(file, 'eng');
+            if (result && result.data && result.data.text) {
+                document.getElementById("filterInput").value = result.data.text;
+                showToast("✅ تم الاستخراج بنجاح");
+                runFilter(); // تصفية الأرقام تلقائياً
+            } else {
+                showToast("⚠️ لم يتم العثور على نص");
+            }
+        } catch(e) { 
+            console.error(e);
+            showToast("❌ فشل التحليل: تأكد من جودة الصورة"); 
+        }
+    }
+
+    // السحب والإفلات
+    const dropZone = document.getElementById('dropZone');
     dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
     dropZone.ondragleave = () => dropZone.classList.remove('dragover');
     dropZone.ondrop = (e) => { 
         e.preventDefault(); 
         dropZone.classList.remove('dragover'); 
-        if(e.dataTransfer.files.length > 0) handleOcr(e.dataTransfer.files[0]); 
+        if(e.dataTransfer.files && e.dataTransfer.files[0]) handleOcr(e.dataTransfer.files[0]);
     };
 
-    // مراقب اللصق العالمي
-    document.addEventListener('paste', async (e) => {
-        // نتحقق إذا كان المستخدم في تبويب الصورة
-        if (document.getElementById('btnImage').classList.contains('active')) {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let index in items) {
-                const item = items[index];
-                if (item.kind === 'file' && item.type.includes('image')) {
-                    const blob = item.getAsFile();
-                    handleOcr(blob);
-                }
-            }
-        }
-    });
+    // --- منطق المعالجة والتنسيق ---
 
-    // دالة تحليل الصورة (OCR)
-    async function handleOcr(file) {
-        if(!file) return;
-        showToast("⏳ جاري تحليل الصورة... انتظر ثوانٍ");
-        
-        try {
-            // استخدام النسخة الحديثة من Tesseract
-            const worker = await Tesseract.createWorker('eng');
-            const { data: { text } } = await worker.recognize(file);
-            
-            document.getElementById("filterInput").value = text;
-            await worker.terminate();
-            
-            showToast("✅ تم استخراج النص");
-            runFilter(); // تشغيل الفلتر تلقائياً بعد الاستخراج
-        } catch(e) { 
-            console.error(e);
-            showToast("❌ فشل التحليل، حاول مرة أخرى"); 
-        }
-    }
-
-    // --- وظائف التنسيق المجمع (Mass) ---
     function toggleMassQty() {
         const isR = document.getElementById("massRandomCheck").checked;
         document.getElementById("massFixedQty").style.opacity = isR ? "0.3" : "1";
@@ -247,49 +242,44 @@
 
     function runMassFormatter() {
         const svc = document.getElementById("massService").value.trim();
-        const links = document.getElementById("massLinks").value.split('\n');
+        const linksInput = document.getElementById("massLinks").value.split('\n');
         const isR = document.getElementById("massRandomCheck").checked;
         const qty = document.getElementById("massQty").value;
         const min = parseInt(document.getElementById("massMin").value);
         const max = parseInt(document.getElementById("massMax").value);
 
-        if(!svc) { showToast("⚠️ يرجى إدخال رقم الخدمة"); return; }
+        if(!svc) { showToast("⚠️ رقم الخدمة مطلوب"); return; }
         
-        let res = ""; let c = 0;
-        links.forEach(l => {
-            const line = l.trim();
-            if(line) {
-                const fQty = isR ? Math.floor(Math.random()*(max-min+1))+min : qty;
-                res += `${svc} | ${line} | ${fQty}\n`; c++;
+        let res = ""; let count = 0;
+        linksInput.forEach(line => {
+            const cleanLine = line.trim();
+            if(cleanLine.length > 3) {
+                const finalQty = isR ? Math.floor(Math.random()*(max-min+1))+min : qty;
+                res += `${svc} | ${cleanLine} | ${finalQty}\n`;
+                count++;
             }
         });
         
         document.getElementById("massResult").value = res.trim();
         document.getElementById("massStatsBox").style.display = "block";
-        document.getElementById("massStats").innerText = `✨ تم تنسيق ${c} طلب بنجاح!`;
+        document.getElementById("massStats").innerText = `✨ تم تنسيق ${count} رابط بنجاح!`;
     }
 
-    // --- وظائف التصفية (Filter) ---
     function runFilter() {
         const input = document.getElementById("filterInput").value;
         const type = document.getElementById("filterType").value;
         
-        // استخراج كل الأرقام من النص
         let nums = input.match(/\d+/g);
-        if(!nums) { showToast("⚠️ لم يتم العثور على أرقام"); return; }
+        if(!nums) { showToast("⚠️ لا توجد أرقام"); return; }
         
-        // تصفية الأرقام (أرقام الطلبات عادة تكون 5 خانات فأكثر)
         let filtered = (type === "id") ? nums.filter(n => n.length >= 5) : nums;
-        
-        // إزالة التكرار
         let unique = [...new Set(filtered)];
         
         document.getElementById("filterResult").value = unique.join(",");
         document.getElementById("filterStatsBox").style.display = "block";
-        document.getElementById("filterStats").innerText = `✅ تم استخراج ${unique.length} رقم فريد.`;
+        document.getElementById("filterStats").innerText = `✅ تم استخراج ${unique.length} رقم.`;
     }
 
-    // --- أدوات مساعدة ---
     function showToast(msg) {
         const t = document.getElementById("toast");
         t.innerText = msg; t.style.display = "block";
@@ -297,12 +287,12 @@
     }
 
     async function copyValue(id) {
-        const v = document.getElementById(id).value;
-        if(!v) return;
+        const val = document.getElementById(id).value;
+        if(!val) return;
         try {
-            await navigator.clipboard.writeText(v);
-            showToast("📋 تم النسخ إلى الحافظة");
-        } catch (err) {
+            await navigator.clipboard.writeText(val);
+            showToast("📋 تم النسخ!");
+        } catch(e) {
             showToast("❌ فشل النسخ التلقائي");
         }
     }
